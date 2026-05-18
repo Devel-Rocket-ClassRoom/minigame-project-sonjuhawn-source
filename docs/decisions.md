@@ -8,6 +8,27 @@
 
 ## 2026-05-18
 
+### #2 입력 시스템 정리 완료 — 책임 분리 (SRP) 아키텍처
+- **결정**: 단일 `CharacterInput` 클래스에서 3개 클래스로 책임 분리.
+  - `PlayerInputHandler` — InputSystem 어댑터 (폴링 프로퍼티 + 단발 이벤트 노출)
+  - `CharacterMover` — 이동·회전·Animator `Move` 파라미터
+  - `PlayerCombat` — Attack/HeavyAttack/Dodge 이벤트 구독 → Animator 트리거
+- **이유**: SRP. #5 콤보 / #6 강공 / #7 회피 i-frame 같은 복잡한 로직이 들어와도 한 클래스가 비대해지지 않음. 각 클래스의 변경 이유가 한 가지로 한정됨.
+- **영향**: 향후 전투/이동 로직 변경 시 해당 클래스만 손대면 됨. `CharacterInput.cs` 삭제.
+
+### 입력 명명 통일 — HardAttack → HeavyAttack
+- **결정**: `.inputactions` / Animator 파라미터 / 코드 모두 `HeavyAttack`로 통일.
+- **이유**: 게임 업계 영문 표준 (다크소울/엘든링/다잉라이트 등). 포폴에서 자연스러운 표기.
+- **영향**: 이후 모든 강공 관련 명명 `HeavyAttack` 컨벤션 사용.
+
+### Shift 조합 입력 처리 — 결정 보류 (#5에서 결정)
+- **상태**: `PlayerInputHandler`에 `Modifier` 액션 자체는 정의되어 있지만 노출 방식은 미정.
+- **두 옵션**:
+  - (1) **Composite Binding** — `.inputactions`에 `SpinAttack`/`DownAttack` 같은 새 액션 정의. 입력 추상화 정석, 키 재바인딩 자동 호환. 단점: 액션 수 증가.
+  - (2) **Modifier 상태 + 코드 분기** — `IsModifierHeld` 프로퍼티 노출, `PlayerCombat`에서 if 분기. 단점: 키 재바인딩 시 코드 영향.
+- **잠정 추천**: 옵션 2 (런타임 분기 유연성. 스테미나·콤보 상태와 자연스러운 결합).
+- **결정 시점**: #5 콤보 작업 시작 시점에 확정.
+
 ### #1 캐릭터 컨트롤러 완료 — 카메라·회전·Animator 셋업
 - **카메라-캐릭터 회전 분리**: CameraTarget을 캐릭터 자식이 아닌 씬 루트의 독립 GameObject로 두고, `CameraTargetFollow`(LateUpdate)가 캐릭터 position만 추적.
 - **이유**: 자식으로 두면 캐릭터 회전이 카메라까지 전파되어 다크소울식 등 뒤 카메라가 됨. 마영전/검은사막식 무락온 무드와 맞지 않음.
