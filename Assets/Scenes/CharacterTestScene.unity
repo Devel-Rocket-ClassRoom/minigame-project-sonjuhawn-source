@@ -476,9 +476,6 @@ PrefabInstance:
       addedObject: {fileID: 1026996433}
     - targetCorrespondingSourceObject: {fileID: 1194394832456452, guid: 0276fd68d2eb8e64aa562b0c13ae1bf9, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1026996432}
-    - targetCorrespondingSourceObject: {fileID: 1194394832456452, guid: 0276fd68d2eb8e64aa562b0c13ae1bf9, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1026996437}
     - targetCorrespondingSourceObject: {fileID: 1194394832456452, guid: 0276fd68d2eb8e64aa562b0c13ae1bf9, type: 3}
       insertIndex: -1
@@ -667,20 +664,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4220219224533934, guid: 0276fd68d2eb8e64aa562b0c13ae1bf9, type: 3}
   m_PrefabInstance: {fileID: 863967265}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1026996432
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1026996429}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 221206e77011f3b46b04fa53d1bc4d8a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CharacterInput
-  cam: {fileID: 961739752}
-  moveSpeed: 3
 --- !u!136 &1026996433
 CapsuleCollider:
   m_ObjectHideFlags: 0
