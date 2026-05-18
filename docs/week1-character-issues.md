@@ -30,7 +30,10 @@
 `Assets/InputSystem_Actions.inputactions`에 전투용 액션을 정의하고, C# 스크립트에서 이벤트 기반으로 받을 수 있게 한다.
 
 **작업 내용**
-- [ ] 액션 추가: `Move` (Vector2), `Attack` (Button, 좌클릭), `HeavyAttack` (Button, 우클릭), `Dodge` (Button, Space), `Skill` (Button, Q), `Modifier` (Button, Shift)
+- [x] 액션 추가: `Move` (Vector2) — #1에서 완료
+- [ ] 액션 추가: `Attack` (Button, 좌클릭), `HeavyAttack` (Button, 우클릭), `Dodge` (Button, Space), `Skill` (Button, Q), `Modifier` (Button, Shift)
+- [ ] 액션 추가: `Look` (Vector2, Mouse Delta + Gamepad RightStick) — 카메라 회전용
+- [ ] `CinemachineInputAxisController`가 `Look` 액션을 자동 인식하는지 확인 + 마우스 감도(X·Y Gain) 조절 (Y는 보통 X보다 둔감하게)
 - [ ] `PlayerInputHandler` (가칭) 스크립트에서 각 액션을 이벤트로 노출
 - [ ] Shift + 좌클릭, Shift + Q 같은 조합 입력은 별도 컴포지트로 처리할지 / 코드에서 Modifier 상태로 판정할지 결정
 

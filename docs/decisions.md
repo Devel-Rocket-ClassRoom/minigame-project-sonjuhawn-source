@@ -6,6 +6,28 @@
 
 ---
 
+## 2026-05-18
+
+### #1 캐릭터 컨트롤러 완료 — 카메라·회전·Animator 셋업
+- **카메라-캐릭터 회전 분리**: CameraTarget을 캐릭터 자식이 아닌 씬 루트의 독립 GameObject로 두고, `CameraTargetFollow`(LateUpdate)가 캐릭터 position만 추적.
+- **이유**: 자식으로 두면 캐릭터 회전이 카메라까지 전파되어 다크소울식 등 뒤 카메라가 됨. 마영전/검은사막식 무락온 무드와 맞지 않음.
+- **영향**: `Assets/Script/Camera/CameraTargetFollow.cs`. 락온 도입 시 별도 추적 로직.
+
+### 회전 방식 — 마영전식 즉시 회전 (RotateTowards ~2000도/초)
+- **결정**: 부드러운 Slerp 보간 대신 `Quaternion.RotateTowards` 빠른 각속도(2000f/s)로 거의 즉시 회전.
+- **이유**: 입력 반응성·액션감 우선. 부드러운 보간은 둔하게 느껴짐. 검은사막보다 마영전 톤.
+- **영향**: `CharacterInput.cs` Update 회전. 락온 도입 시 분기 추가.
+
+### 카메라 셋업 — Cinemachine 3.x 4종 컴포넌트
+- **구성**: `CinemachineCamera` + `ThirdPersonFollow` + `Deoccluder` + `InputAxisController` + 별도 `CameraTarget`.
+- **#1 범위**: 위치/추적만 셋업. 마우스 회전 입력은 #2의 `Look` 액션 추가 + InputAxisController 자동 연결로 처리.
+- **이유**: 작업 단위 분리. #1 = 캐릭터 컨트롤러 완성, #2 = InputSystem 종합 정리.
+
+### Animator Speed — StringToHash + input.magnitude 매핑
+- **결정**: `SetFloat`을 `Animator.StringToHash`로 ID 캐싱, 값은 `input.magnitude`로 부호 없는 크기 전달.
+- **이유**: 매 프레임 문자열 해시 변환 회피(성능). magnitude로 8방향 어떤 입력이든 Run 트랜지션 작동.
+- **영향**: 향후 다른 Animator 파라미터도 동일 해시 캐싱 패턴 사용.
+
 ## 2026-05-17
 
 ### 데미지·획득 텍스트 팝업 — Screen Space + WorldToScreenPoint 방식 채택
