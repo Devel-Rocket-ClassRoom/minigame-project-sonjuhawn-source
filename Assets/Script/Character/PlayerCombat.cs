@@ -5,9 +5,13 @@ public class PlayerCombat : MonoBehaviour
     private static readonly int AttackHash = Animator.StringToHash("Attack");
     private static readonly int HeavyAttackHash = Animator.StringToHash("HeavyAttack");
     private static readonly int DodgeHash = Animator.StringToHash("Dodge");
+    private static readonly int FinisherHash = Animator.StringToHash("Finisher");
+
 
     private PlayerInputHandler input;
     private Animator anim;
+
+    private int leftComboIndex = 0;
 
     private void Awake()
     {
@@ -32,12 +36,31 @@ public class PlayerCombat : MonoBehaviour
     private void HandleAttack()
     {
         anim.SetTrigger(AttackHash);
-        // 향후 자리: 스테미나 체크, 콤보 인덱스 관리
     }
+
+    public void SetComboIndex(int value)
+    {
+        leftComboIndex = value;
+        Debug.Log($"Left Combo Index: {leftComboIndex}");
+    }
+
+    public void ResetCombo()
+    {
+        leftComboIndex = 0;
+        Debug.Log($"Combo Reset");
+    }
+
 
     private void HandleHeavyAttack()
     {
-        anim.SetTrigger(HeavyAttackHash);
+        if(leftComboIndex == 3)
+        {
+            anim.SetTrigger(FinisherHash);
+        }
+        else
+        {
+            anim.SetTrigger(HeavyAttackHash);
+        }
         // 향후 자리: 스테미나 소모 체크
     }
 
@@ -46,4 +69,6 @@ public class PlayerCombat : MonoBehaviour
         anim.SetTrigger(DodgeHash);
         // 향후 자리: 쿨타임 체크, i-frame 활성화
     }
+
+    
 }
