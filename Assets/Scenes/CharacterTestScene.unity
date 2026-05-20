@@ -1165,6 +1165,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 8041946d7a269f34aa408c6d15958076, type: 2}
+    - target: {fileID: 95508205990519034, guid: 0276fd68d2eb8e64aa562b0c13ae1bf9, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -1196,6 +1200,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1194394832456452, guid: 0276fd68d2eb8e64aa562b0c13ae1bf9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1026996440}
+    - targetCorrespondingSourceObject: {fileID: 1194394832456452, guid: 0276fd68d2eb8e64aa562b0c13ae1bf9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1026996444}
   m_SourcePrefab: {fileID: 100100000, guid: 0276fd68d2eb8e64aa562b0c13ae1bf9, type: 3}
 --- !u!1 &961739749
 GameObject:
@@ -1502,6 +1509,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc5a945ba961a7a4b9ed56748808de10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
+  dodgeDistance: 0.1
+  dodgeDuration: 2
+  dodgeCooldown: 1
+  dodgeStaminaCost: 25
+  heavyAttack0Cost: 25
+  heavyAttack1Cost: 30
+  heavyDashCost: 35
+  finisherCost: 50
 --- !u!114 &1026996440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1544,6 +1559,18 @@ MonoBehaviour:
   agility: 10
   vitality: 10
   stamina: 10
+--- !u!114 &1026996444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1026996429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 971ca2da93638c147855fb2fca71bf8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterStateMachine
 --- !u!1 &1078279972
 GameObject:
   m_ObjectHideFlags: 0

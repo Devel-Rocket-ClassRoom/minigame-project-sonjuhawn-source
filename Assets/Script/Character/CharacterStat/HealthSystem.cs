@@ -6,12 +6,12 @@ public class HealthSystem : MonoBehaviour
     [SerializeField] private int hpPerVitality = 10;  // 체력 1당 HP 변환 비율
 
     private IStatProvider stats;
+    private CharacterStateMachine state;
     private int currentHp;
     private int maxHp;
 
     public int CurrentHp => currentHp;
     public int MaxHp => maxHp;
-    public bool IsInvincible { get; set; }  // 회피 i-frame (#7), 피격 후 무적 등
 
     public event Action<int, int> OnHpChanged;  // (current, max) — UI 갱신용
     public event Action OnDeath;
@@ -19,6 +19,7 @@ public class HealthSystem : MonoBehaviour
     private void Awake()
     {
         stats = GetComponent<IStatProvider>();
+        state = GetComponent<CharacterStateMachine>();
     }
 
     private void Update()
@@ -53,7 +54,7 @@ public class HealthSystem : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-        if (IsInvincible)
+        if (state != null && state.IsInvincible)
             return;
 
         currentHp = Mathf.Max(currentHp - amount, 0);

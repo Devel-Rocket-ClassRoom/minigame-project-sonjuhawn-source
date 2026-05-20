@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using static CharacterStateMachine;
 
 public class PlayerCombat : MonoBehaviour
 {
@@ -17,14 +19,32 @@ public class PlayerCombat : MonoBehaviour
     };
 
     private PlayerInputHandler input;
+    private CharacterStateMachine state;
+    private StaminaSystem stamina;
     private Animator anim;
+    private Rigidbody rb;
 
     private int leftComboIndex = 0;
+
+    [SerializeField] private float dodgeDistance = 3f;
+    [SerializeField] private float dodgeDuration = 0.3f;
+    [SerializeField] private float dodgeCooldown = 0.4f;
+    private float lastDodgeTime = -999f;
+
+    [SerializeField] private int dodgeStaminaCost = 25;
+    [SerializeField] private int heavyAttack0Cost = 25;
+    [SerializeField] private int heavyAttack1Cost = 30;
+    [SerializeField] private int heavyDashCost = 35;
+    [SerializeField] private int finisherCost = 50;
 
     private void Awake()
     {
         input = GetComponent<PlayerInputHandler>();
+        state = GetComponent<CharacterStateMachine>();
+        stamina = GetComponent<StaminaSystem>();    
         anim = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>();
+        
     }
 
     private void OnEnable()
@@ -41,10 +61,6 @@ public class PlayerCombat : MonoBehaviour
         input.OnDodge -= HandleDodge;
     }
 
-    /// <summary>
-    /// 지정한 트리거 하나만 켜고 다른 액션 트리거는 모두 끈다.
-    /// 트리거 누적으로 인한 의도치 않은 콤보 진행 방지.
-    /// </summary>
     private void SetTriggerExclusive(int hash)
     {
         for (int i = 0; i < ActionTriggers.Length; i++)
@@ -57,32 +73,97 @@ public class PlayerCombat : MonoBehaviour
 
     private void HandleAttack()
     {
+        if (state.CurrentState == PlayerState.Dodging ||
+        state.CurrentState == PlayerState.Damaged ||
+        state.CurrentState == PlayerState.Dead)
+            return;
+
         SetTriggerExclusive(AttackHash);
+    }
+
+    public void OnAttackRecover()
+    {
+        if (stamina != null)
+            stamina.Recover(15);
     }
 
     private void HandleHeavyAttack()
     {
+        if (state.CurrentState == PlayerState.Dodging ||
+        state.CurrentState == PlayerState.Damaged ||
+        state.CurrentState == PlayerState.Dead)
+            return;
+
+        int cost;
+        int triggerHash;
+
         switch (leftComboIndex)
         {
-            case 0: SetTriggerExclusive(HeavyAttack0Hash); break;
-            case 1: SetTriggerExclusive(HeavyAttack1Hash);    break;
-            case 2: SetTriggerExclusive(HeavyDashHash); break;
-            case 3: SetTriggerExclusive(FinisherHash);     break;
+            case 0: 
+                cost = heavyAttack0Cost; 
+                triggerHash = HeavyAttack0Hash; 
+                break;
+            case 1: 
+                cost = heavyAttack1Cost; 
+                triggerHash = HeavyAttack1Hash; 
+                break;
+            case 2: 
+                cost = heavyDashCost; 
+                triggerHash = HeavyDashHash; 
+                break;
+            case 3: 
+                cost = finisherCost; 
+                triggerHash = FinisherHash; 
+                break;
+            default: return;
         }
-        // 향후 자리: 스테미나 소모 체크
+
+        if (!stamina.TryConsume(cost))   // 스테미나 부족 시 발동 안 함
+            return;
+
+        SetTriggerExclusive(triggerHash);
     }
 
     private void HandleDodge()
     {
+        if (state.CurrentState == PlayerState.Damaged ||
+            state.CurrentState == PlayerState.HeavyAttacking ||
+        state.CurrentState == PlayerState.Dead)
+            return;
+
+        if (Time.time - lastDodgeTime < dodgeCooldown)
+            return;
+
+        if (!stamina.TryConsume(dodgeStaminaCost))
+            return;
+
+        lastDodgeTime = Time.time;
+
+        Vector3 direction = transform.forward;
+
         SetTriggerExclusive(DodgeHash);
-        // 향후 자리: 쿨타임 체크, i-frame 활성화
+        StartCoroutine(DodgeMove(direction));
+    }
+
+    private IEnumerator DodgeMove(Vector3 direction)
+    {
+        float elapsed = 0f;
+        Vector3 velocity = direction * (dodgeDistance / dodgeDuration);
+
+        while (elapsed < dodgeDuration)
+        {
+            rb.MovePosition(rb.position + velocity * Time.deltaTime);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
     }
 
     public void SetComboIndex(int value)
     {
         leftComboIndex = value;
-        Debug.Log($"Left Combo Index: {leftComboIndex}");
     }
+
+
 
     public void ResetCombo()
     {
@@ -90,6 +171,5 @@ public class PlayerCombat : MonoBehaviour
         // 잔존 트리거 일괄 정리 — Idle 복귀 시 호출
         for (int i = 0; i < ActionTriggers.Length; i++)
             anim.ResetTrigger(ActionTriggers[i]);
-        Debug.Log("Combo Reset");
     }
 }
