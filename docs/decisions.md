@@ -1,219 +1,53 @@
-# 결정 로그 (Decisions Log)
+# Decisions Summary
 
-> 프로젝트 진행 중 내린 설계/디자인 결정 누적 기록.
-> 새 결정 나올 때마다 맨 위에 한 항목씩 추가 (최신 우선).
-> 형식: **날짜 — 결정** / 이유 / 영향받는 부분
+## 현재 아키텍처
 
----
+- InputSystem 기반
+- PlayerInputHandler / CharacterMover / PlayerCombat 책임 분리
+- Animator 기반 상태 동기화
+- PlayerState enum 사용
+- 콤보 인덱스는 Animator StateMachineBehaviour에서 관리
 
-## 2026-05-20
+## 스탯 시스템
 
-### #M1 몬스터 — 1주차 SO 도입 (어제 컴포넌트 직접 값 결정 갱신)
-- **결정**: 1주차 #M1에 `MonsterData` ScriptableObject 도입. 어제(2026-05-19) MVP 결정의 "SO 대신 컴포넌트 직접 값"을 갱신.
-- **이유**:
-  - 1주차 1종이지만 2주차 강화/원거리 몬스터 추가 시 *동일 코드 + SO만 추가*로 확장 → 인프라 가치 크고 시간은 +30분 정도로 작음.
-  - 보스 제외 결정으로 일정 약간 여유.
-  - 학습/포폴 — ScriptableObject 데이터-동작 분리 패턴.
-- **CSV는 2주차 별도 이슈로 분리**:
-  - 1주차에 CSV → SO 자동 변환 인프라 도입은 +2~3시간이라 부담.
-  - 2주차에 강화/원거리 + 무기/유물/스킬 강화 등 다양한 데이터가 모이면 *전용 이슈 (#X — CSV Data Pipeline)* 로 정식 도입. Editor 스크립트, 파서, 검증 등 본격 학습.
-- **영향**:
-  - `MonsterData.cs` (SO) — id, maxHp, attackPower, moveSpeed, attackRange, detectRange, attackCooldown, expReward, goldReward
-  - `Resources/MonsterData/TurnipaSO.asset` 1개 (1주차)
-  - `MonsterHealth`, `MonsterAI`가 SO 참조
-  - 2주차 강화/원거리 몬스터 = prefab + SO 추가만으로 끝.
+- 현재:
+  - PlayerStats int 기반 MVP
+  - IStatProvider 인터페이스 사용
 
-### 스테미나 타이밍 — 회복은 Animation Event 즉시 적용, 소모는 2주차 검토
-- **결정**:
-  - **회복**: Animation Event로 변경 (#7 단계). 기존 OnStateExit(모션 종료 시) 회복은 손맛 약함 → 모션 중 타격 프레임에 회복.
-  - **소모**: 1주차에는 현재 트리거 발동 시점 그대로(`TryConsume` 한 줄). 2주차 폴리싱에서 StateMachineBehaviour OnStateEnter로 마이그레이션 검토.
-- **이유**:
-  - 액션감의 핵심은 *타격 프레임 정확도*. 회복이 모션 끝난 후라 어색.
-  - 소모는 트리거→Animator 진입 시점 차이가 1~2프레임이라 1주차에선 미세 차이로 무시.
-- **향후 마이그레이션 (#M1 이후)**:
-  - 회복을 *적중 시에만* — Animation Event(예: `OnAttackHit`)에서 OverlapSphere로 적 탐지 → 적중 시에만 `stamina.Recover()`. 헛스윙은 회복 X.
-- **영향**:
-  - `PlayerCombat`에 `OnAttackRecover` (또는 향후 `OnAttackHit`) public 메서드.
-  - 기존 `StaminaRecoverBehaviour` 제거 (Animator 상태에서 Remove Behaviour).
-  - Attack0/1/2 클립에 Animation Event 추가.
+- 추후:
+  - SO + Modifier 시스템 예정
 
-### 레벨업 스탯 분배 — 정비 타이밍 누적 분배 방식 (옵션 2 채택)
-- **결정**: 레벨업 시 즉시 분배 UI 띄우지 않음. *전투 중에는 포인트만 누적* + 즉시 시각 피드백("Level Up!"), 분배 UI는 웨이브 클리어 후 정비 시간에 표시.
-- **이유**:
-  - 액션 게임 페이싱 보존 — 일시정지로 전투 흐름 끊지 않음.
-  - CLAUDE.md의 스킬 강화 흐름(스테이지 클리어마다 택 1~2)과 일관성.
-  - 헤이디스 식 정비 타이밍 의사결정 패턴 — 누적 포인트로 결정의 무게감.
-- **1주차 MVP**: 자동 분배 유지 (`GrowAll(1)`). 포인트 누적 UI + 분배 UI 패널은 2주차.
-- **영향**:
-  - `#8 레벨업` 이슈 본문 — 2주차에 "포인트 누적 HUD + 정비 시간 분배 UI 패널" 추가.
-  - `PlayerStats.Grow(StatType, amount)` 메서드가 2주차 분배 UI에서 호출됨.
-  - 정비 화면 진입 시 자동 팝업 vs 별도 오브젝트 상호작용 — 구현 시점에 결정.
+## 전투 정책
 
-### #3 스탯 시스템 — 하이브리드 도입 (C안, 어제 MVP 결정 갱신)
-- **결정**: PlayerStats 컴포넌트 + int 4개(Strength/Agility/Vitality/Stamina)로 시작하되, **외부 인터페이스를 `IStatProvider`로 추상화**.
-- **이유**: 일정 압박 + 향후 SO + Modifier 마이그레이션 안전성 확보. 2주차에 PlayerStats 내부 구현을 SO 기반으로 바꿔도 외부 시스템(HP/Combat/UI) 영향 없음. 현업에서 캐릭터 스탯이 컴포넌트 int로 끝나지 않는 점을 미래 비용으로 인식.
-- **인터페이스**:
-  - `int Strength/Agility/Vitality/Stamina { get; }` 읽기 전용
-  - `event Action OnStatChanged` 이벤트 (UI/HP/Combat 자동 반응)
-- **#3 범위 (MVP)**:
-  - `IStatProvider` 인터페이스
-  - `PlayerStats : MonoBehaviour, IStatProvider` (int 4개 + `GrowAll(int amount = 1)` + 이벤트 발행)
-- **2주차 리팩토링 예정**:
-  - `CharacterStatData` (SO) — 베이스 스탯
-  - `StatModifier` 시스템 — Flat / PercentAdd / PercentMul 모디파이어 타입
-  - 무기/버프/장비/스킬 강화/유물이 모두 Modifier 인프라로 결합
-- **영향**: HP/스테미나(#4)·공격력 계산(#5/#6) 등 모든 의존 시스템이 `PlayerStats` 직접 참조 대신 `IStatProvider`에 의존. 어제(2026-05-19) MVP 결정의 `#3 스텟` 항목을 이 결정으로 갱신.
+- 기본공격:
+  - 스태미나 회복
+  - Animation Event 타이밍 사용
 
-### 캐릭터 상태 머신 — `PlayerState` enum 도입 시점은 #7 (B안 채택)
-- **결정**: `PlayerState` enum + `PlayerStateMachine` 컴포넌트를 #7 회피 작업 시작 시점에 도입.
-- **enum 후보**: `Idle, Moving, Attacking, HeavyAttacking, Dodging, Damaged, Dead`
-- **보조 플래그**: `IsInvincible` (enum으로 표현 어려운 동시 상태 — 회피·피격 무적)
-- **상태 변경 주체**: Animator StateMachineBehaviour가 `OnStateEnter`에서 갱신 (Animator를 진실의 원천으로 — #5 `ComboIndexBehaviour`와 같은 패턴 재활용).
-- **이유**:
-  - #6까지는 enum 없이도 동작 가능 (강공은 단순 트리거).
-  - #7 회피의 i-frame이 enum의 가장 자연스러운 첫 사용처 — 도입 명분 명확.
-  - 공격 중 이동 락, 피격 처리, 사망 처리에도 같은 인프라 재사용.
-- **영향**:
-  - `Assets/Script/Character/PlayerState.cs`, `PlayerStateMachine.cs` 추가 예정 (#7).
-  - 기존 `CharacterMover`/`PlayerCombat`이 state 확인 후 동작 분기.
+- 강공:
+  - 쿨타임 없음
+  - 스태미나만 소모
 
-### #5 누락 결정 보충 — A안 채택 + StateMachineBehaviour 콤보 동기화
-- **A안 채택**: 좌클릭 콤보 인덱스에 따라 우클릭 강공이 변형 — 인덱스 0/Idle/Move → 기본 HeavyAttack, 인덱스 3/Attack2 후 → Finisher. 중간 변형(인덱스 1·2)은 #6 범위로 이월.
-- **콤보 인덱스 동기화 — StateMachineBehaviour 방식**: 코드의 `leftComboIndex`는 입력 콜백에서 직접 변경하지 않고, Animator 상태 진입 시점에 `ComboIndexBehaviour`/`ComboResetBehaviour`가 갱신.
-- **이유**: 입력 발생 ≠ 실제 콤보 진행. Animator의 콤보 윈도우 안에서 *실제로 전이된 순간*에만 인덱스가 변해야 정확.
-- **영향**: `Assets/Script/Character/ComboIndexBehaviour.cs`, `ComboResetBehaviour.cs`. 위 `PlayerStateMachine`도 동일 패턴 재활용.
+- 회피:
+  - i-frame 존재
+  - 짧은 쿨타임 사용
 
----
+## 몬스터/웨이브
 
-## 2026-05-19
+- 몬스터 데이터는 ScriptableObject 사용
+- 드랍 오브젝트 없이 즉시 지급
+- 5웨이브 후 보스 등장
 
-### 1주차 빌드 스코프 — 풀버전 대신 **MVP**로 축소
-- **결정**: 1주차 빌드 목표를 "5웨이브 → 보스 → 클리어가 한 번 돌아가는 상태"로 한정. 풀버전(SO/UI 패널/완전한 시스템화)은 2주차 이후로 미룸.
-- **이유**: 컨디션 + 실작업 가능 시간(약 22~25h)이 풀버전 견적(27~42h)에 못 미침. 빌드 자체가 1주차 핵심 산출물이라 누락 방지가 최우선.
-- **자른/축소 항목**:
-  - `#3 스텟` → ScriptableObject 없이 `PlayerStats` 컴포넌트 `int` 4개로 시작. SO화는 2주차 리팩토링.
-  - `#4 HP/스테미나` → HP 우선. 스테미나는 시스템만 + 단순 슬라이더.
-  - `#5/#6/#7` → 콤보 윈도우 조율·쿨타임 헬퍼 클래스화는 폴리싱. 1주차는 동작 골격만.
-  - `#7 회피` → i-frame + 이동만. 쿨타임은 if 한 줄 변수로.
-  - `#8 경험치/레벨업` → **자동 스텟 분배**(레벨업 시 모든 스텟 +1). 분배 UI 패널은 2주차.
-  - `#M1 몬스터` → NavMeshAgent 대신 `MoveTowards` + 근접 공격. SO 대신 컴포넌트 직접 값.
-  - `#B1 보스` → 몬스터 코드 재사용, 스케일/HP만 차별화. 별도 AI 미작성.
-  - `#S1 맵` → Plane + 벽 콜라이더 4개 + 스폰 포인트만.
-  - `#S2 웨이브` → 데이터 SO 없이 코드 배열로.
-  - `#13 데미지 팝업` → 1주차 빌드 비포함. 2주차 폴리싱.
-- **영향**: 위 축소 항목들은 2주차/3주차 정식 구현 시 별도 리팩토링 이슈로 등록 예정.
+## 현재 우선순위
 
-### 1주차 작업 일별 일정 — 컨디션 우선, 오늘은 #5만
-- **결정**: 화 저녁(오늘)은 #5 콤보 마무리까지만 가볍게. 수~금오전 분배는 아래.
-- **일정**:
-  - **화 저녁(오늘)**: #5 좌클릭 콤보 마무리 — Animator 정합성, 트리거/리셋. 데미지 적용은 내일로.
-  - **수**: 오전 — #3 스텟 컴포넌트 + #4 HP/스테미나 시스템. 오후 — UI 게이지 + #5 데미지 적용 + 더미 적으로 테스트.
-  - **목**: 오전 — #M1 몬스터 + #6 강공 스테미나 연동. 오후 — #7 회피 + #8 레벨업 자동분배.
-  - **금 오전**: #S1 맵 + #S2 웨이브 + #B1 보스 + #BUILD1 빌드/영상.
-- **이유**: 컨디션 회복 + 막판 빌드 실패 사고 방지(영상 캡처 시간 확보).
+1. 플레이어 전투 안정화
+2. 몬스터 AI
+3. 웨이브 시스템
+4. 보스
+5. 빌드
 
----
+## 추후 리팩토링 예정
 
-## 2026-05-18
-
-### #2 입력 시스템 정리 완료 — 책임 분리 (SRP) 아키텍처
-- **결정**: 단일 `CharacterInput` 클래스에서 3개 클래스로 책임 분리.
-  - `PlayerInputHandler` — InputSystem 어댑터 (폴링 프로퍼티 + 단발 이벤트 노출)
-  - `CharacterMover` — 이동·회전·Animator `Move` 파라미터
-  - `PlayerCombat` — Attack/HeavyAttack/Dodge 이벤트 구독 → Animator 트리거
-- **이유**: SRP. #5 콤보 / #6 강공 / #7 회피 i-frame 같은 복잡한 로직이 들어와도 한 클래스가 비대해지지 않음. 각 클래스의 변경 이유가 한 가지로 한정됨.
-- **영향**: 향후 전투/이동 로직 변경 시 해당 클래스만 손대면 됨. `CharacterInput.cs` 삭제.
-
-### 입력 명명 통일 — HardAttack → HeavyAttack
-- **결정**: `.inputactions` / Animator 파라미터 / 코드 모두 `HeavyAttack`로 통일.
-- **이유**: 게임 업계 영문 표준 (다크소울/엘든링/다잉라이트 등). 포폴에서 자연스러운 표기.
-- **영향**: 이후 모든 강공 관련 명명 `HeavyAttack` 컨벤션 사용.
-
-### Shift 조합 입력 처리 — 결정 보류 (#5에서 결정)
-- **상태**: `PlayerInputHandler`에 `Modifier` 액션 자체는 정의되어 있지만 노출 방식은 미정.
-- **두 옵션**:
-  - (1) **Composite Binding** — `.inputactions`에 `SpinAttack`/`DownAttack` 같은 새 액션 정의. 입력 추상화 정석, 키 재바인딩 자동 호환. 단점: 액션 수 증가.
-  - (2) **Modifier 상태 + 코드 분기** — `IsModifierHeld` 프로퍼티 노출, `PlayerCombat`에서 if 분기. 단점: 키 재바인딩 시 코드 영향.
-- **잠정 추천**: 옵션 2 (런타임 분기 유연성. 스테미나·콤보 상태와 자연스러운 결합).
-- **결정 시점**: #5 콤보 작업 시작 시점에 확정.
-
-### #1 캐릭터 컨트롤러 완료 — 카메라·회전·Animator 셋업
-- **카메라-캐릭터 회전 분리**: CameraTarget을 캐릭터 자식이 아닌 씬 루트의 독립 GameObject로 두고, `CameraTargetFollow`(LateUpdate)가 캐릭터 position만 추적.
-- **이유**: 자식으로 두면 캐릭터 회전이 카메라까지 전파되어 다크소울식 등 뒤 카메라가 됨. 마영전/검은사막식 무락온 무드와 맞지 않음.
-- **영향**: `Assets/Script/Camera/CameraTargetFollow.cs`. 락온 도입 시 별도 추적 로직.
-
-### 회전 방식 — 마영전식 즉시 회전 (RotateTowards ~2000도/초)
-- **결정**: 부드러운 Slerp 보간 대신 `Quaternion.RotateTowards` 빠른 각속도(2000f/s)로 거의 즉시 회전.
-- **이유**: 입력 반응성·액션감 우선. 부드러운 보간은 둔하게 느껴짐. 검은사막보다 마영전 톤.
-- **영향**: `CharacterInput.cs` Update 회전. 락온 도입 시 분기 추가.
-
-### 카메라 셋업 — Cinemachine 3.x 4종 컴포넌트
-- **구성**: `CinemachineCamera` + `ThirdPersonFollow` + `Deoccluder` + `InputAxisController` + 별도 `CameraTarget`.
-- **#1 범위**: 위치/추적만 셋업. 마우스 회전 입력은 #2의 `Look` 액션 추가 + InputAxisController 자동 연결로 처리.
-- **이유**: 작업 단위 분리. #1 = 캐릭터 컨트롤러 완성, #2 = InputSystem 종합 정리.
-
-### Animator Speed — StringToHash + input.magnitude 매핑
-- **결정**: `SetFloat`을 `Animator.StringToHash`로 ID 캐싱, 값은 `input.magnitude`로 부호 없는 크기 전달.
-- **이유**: 매 프레임 문자열 해시 변환 회피(성능). magnitude로 8방향 어떤 입력이든 Run 트랜지션 작동.
-- **영향**: 향후 다른 Animator 파라미터도 동일 해시 캐싱 패턴 사용.
-
-## 2026-05-17
-
-### 데미지·획득 텍스트 팝업 — Screen Space + WorldToScreenPoint 방식 채택
-- **결정**: 몬스터 사망 위치를 매 프레임 `Camera.WorldToScreenPoint`로 변환해 Screen Space Canvas의 UI 텍스트로 띄움.
-- **이유**: 카메라 거리/각도에 상관없이 일정한 크기 + 가독성 최고. 잡몹 많은 핵앤슬래시 톤에 적합. World Space Canvas + 빌보드 방식은 거리 멀면 글자 작아져 잘 안 보임.
-- **구현 필수**: 오브젝트 풀링, 색/접두어로 종류 구분(`+50 EXP` 녹색, `+10 G` 노랑, 데미지 흰색 등), 위치 미세 랜덤 오프셋, `screen.z < 0` 카메라 뒤 처리.
-- **이슈**: 별도 이슈로 분리 권장 (`#13 데미지/획득 텍스트 팝업 시스템`, 라벨 `ui` `week-1`). 1주차 끝물 또는 폴리싱 단계.
-
-### 몬스터 드랍 — 오브젝트 X, **즉시 지급**으로 확정
-- **결정**: 몬스터 처치 시 경험치/골드는 떨어뜨리는 오브젝트 없이 플레이어에게 바로 들어감.
-- **이유**:
-  - 원래 기획서에도 "바로 플레이어에게 전달"로 명시되어 있음.
-  - 오브젝트 드랍 + 자석 + 풀링 추가 작업 부담 → 1주차 일정 압박.
-  - 잡몹 많은 웨이브 구조에서 코인 오브젝트가 화면을 뒤덮을 위험.
-  - 핵앤슬래시 최신 트렌드(헤이디스/베이크오브세이비어 등)도 즉시 지급 + 시각 피드백 조합 다수.
-- **시각 피드백은 데미지 팝업·파티클·게이지 차오름 애니메이션으로 보완.**
-- **영향**: #M1 이슈, 시스템 아키텍처 — `DropTable` SO 분리할 필요 없음. `MonsterData` SO에 `expRange`, `goldRange` 두 필드만 두면 충분.
-
-### 유물(Artifacts) — 상점 전용, 몬스터 드랍 X
-- **결정**: 유물은 몬스터가 떨어뜨리지 않고 상점에서만 구매.
-- **이유**: 기획서 그대로. 드랍 시스템 단순화 + 상점 가치 확보 + 골드 사용처 명확화.
-- **영향**: `ArtifactData` (SO)는 상점 시스템에서만 참조. `MonsterData`의 드랍 필드는 경험치/골드만.
-
-### 우클릭 강공 — **쿨타임 없음**, 스테미나 소모만
-- **결정**: 강공 2타는 별도 쿨타임 없이 스테미나 소모 + 모션 후딜로만 페이싱 제한.
-- **이유**:
-  - 강공은 "핵심 무브셋"이지 "스킬"이 아님.
-  - 검은사막에서도 일반 강공 계열은 자원만 먹고 쿨타임은 없음.
-  - 모션 후딜 + 스테미나 잔량으로 충분히 자연스럽게 제한됨.
-- **자원/쿨타임 분리 원칙**:
-  - 핵심 무브셋(1·2·3 = 기본공격·강공·회피): 스테미나 위주
-  - 스킬(4·5·6 = Q·Shift+Q·Shift+좌클릭): 스테미나 + 쿨타임
-- **영향**: #6 이슈, CLAUDE.md 표/정책 섹션 — 이미 반영됨.
-
-### 회피(Dodge, Space) — 핵심 무브셋에 추가
-- **결정**: 1, 2번(기본공격/강공) 옆에 회피를 #3으로 추가 (항상 사용 가능).
-- **세부**: 스테미나 단발 소모 + 짧은 쿨타임(0.3~0.5초, i-frame 스팸 방지) + 무적 프레임.
-- **키**: Space (잠정 — 변경 가능).
-- **재사용 가능한 `Cooldown` 헬퍼**는 회피 이슈(#7)에서 함께 만들어 이후 스킬 이슈에 재활용.
-- **영향**: CLAUDE.md 표, #7 이슈, 향후 스킬 강화 옵션("회피 스테미나 감소", "i-frame 시간 증가") 후보.
-
-### 1주차 빌드 산출물 이슈 추가 결정
-- **결정**: 매 주차 빌드 산출 정책에 맞춰 `#BUILD1 1주차 빌드 산출물 (Windows Standalone)` 이슈 추가.
-- **이유**: 주차 빌드가 결과물 자체인데 트래킹 안 하면 막판에 누락 위험. 포폴 어필도 빌드+영상이 가장 임팩트 큼.
-- **상태**: 초안은 `docs/week1-environment-issues.md` 작성됨, **GitHub 등록 필요**.
-- **권장 사항**: 본문에 "플레이어 사망 시 씬 리로드" 한 줄 포함 (별도 사망 처리 이슈 만들지 않음 — 1주차 한정).
-
-### 이슈 트래킹 — GitHub Milestone 사용, `week-1` 라벨은 사실상 중복
-- **결정**: 주차별 작업은 GitHub Milestone(`Week 1`, `Week 2`, `Week 3`)으로 관리. `week-1` 같은 주차 라벨은 Milestone과 역할이 겹쳐서 굳이 둘 다 안 써도 됨.
-- **유지할 라벨**: 영역 라벨 (`character`, `monster`, `boss`, `map`, `wave`, `build`, `ui`).
-- **Project 보드**: Status(Backlog/Todo/In Progress/In Review/Done) 칸반 + Milestone 그룹 뷰 두 개.
-
----
-
-## (템플릿 — 새 결정 추가 시 복붙)
-
-### YYYY-MM-DD — 한 줄 결정 제목
-- **결정**: 무엇을 정했는지
-- **이유**: 왜 그렇게 정했는지 (핵심 근거 2~4개)
-- **영향**: 어떤 파일/이슈/시스템이 바뀌어야 하는지
+- Stat Modifier 시스템
+- CSV 데이터 파이프라인
+- 데미지 팝업
+- 스킬 강화 UI
