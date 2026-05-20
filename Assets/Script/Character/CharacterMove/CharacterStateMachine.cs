@@ -30,7 +30,6 @@ public class CharacterStateMachine : MonoBehaviour
         if (CurrentState == newState) return;  
         CurrentState = newState;
         OnStateChanged?.Invoke(newState);
-        Debug.Log($"State: {newState}");
     }
 
     public bool IsState(PlayerState state)

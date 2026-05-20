@@ -8,6 +8,21 @@
 
 ## 2026-05-20
 
+### #M1 몬스터 — 1주차 SO 도입 (어제 컴포넌트 직접 값 결정 갱신)
+- **결정**: 1주차 #M1에 `MonsterData` ScriptableObject 도입. 어제(2026-05-19) MVP 결정의 "SO 대신 컴포넌트 직접 값"을 갱신.
+- **이유**:
+  - 1주차 1종이지만 2주차 강화/원거리 몬스터 추가 시 *동일 코드 + SO만 추가*로 확장 → 인프라 가치 크고 시간은 +30분 정도로 작음.
+  - 보스 제외 결정으로 일정 약간 여유.
+  - 학습/포폴 — ScriptableObject 데이터-동작 분리 패턴.
+- **CSV는 2주차 별도 이슈로 분리**:
+  - 1주차에 CSV → SO 자동 변환 인프라 도입은 +2~3시간이라 부담.
+  - 2주차에 강화/원거리 + 무기/유물/스킬 강화 등 다양한 데이터가 모이면 *전용 이슈 (#X — CSV Data Pipeline)* 로 정식 도입. Editor 스크립트, 파서, 검증 등 본격 학습.
+- **영향**:
+  - `MonsterData.cs` (SO) — id, maxHp, attackPower, moveSpeed, attackRange, detectRange, attackCooldown, expReward, goldReward
+  - `Resources/MonsterData/TurnipaSO.asset` 1개 (1주차)
+  - `MonsterHealth`, `MonsterAI`가 SO 참조
+  - 2주차 강화/원거리 몬스터 = prefab + SO 추가만으로 끝.
+
 ### 스테미나 타이밍 — 회복은 Animation Event 즉시 적용, 소모는 2주차 검토
 - **결정**:
   - **회복**: Animation Event로 변경 (#7 단계). 기존 OnStateExit(모션 종료 시) 회복은 손맛 약함 → 모션 중 타격 프레임에 회복.
