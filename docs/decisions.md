@@ -6,6 +6,58 @@
 
 ---
 
+## 2026-05-20
+
+### 캐릭터 상태 머신 — `PlayerState` enum 도입 시점은 #7 (B안 채택)
+- **결정**: `PlayerState` enum + `PlayerStateMachine` 컴포넌트를 #7 회피 작업 시작 시점에 도입.
+- **enum 후보**: `Idle, Moving, Attacking, HeavyAttacking, Dodging, Damaged, Dead`
+- **보조 플래그**: `IsInvincible` (enum으로 표현 어려운 동시 상태 — 회피·피격 무적)
+- **상태 변경 주체**: Animator StateMachineBehaviour가 `OnStateEnter`에서 갱신 (Animator를 진실의 원천으로 — #5 `ComboIndexBehaviour`와 같은 패턴 재활용).
+- **이유**:
+  - #6까지는 enum 없이도 동작 가능 (강공은 단순 트리거).
+  - #7 회피의 i-frame이 enum의 가장 자연스러운 첫 사용처 — 도입 명분 명확.
+  - 공격 중 이동 락, 피격 처리, 사망 처리에도 같은 인프라 재사용.
+- **영향**:
+  - `Assets/Script/Character/PlayerState.cs`, `PlayerStateMachine.cs` 추가 예정 (#7).
+  - 기존 `CharacterMover`/`PlayerCombat`이 state 확인 후 동작 분기.
+
+### #5 누락 결정 보충 — A안 채택 + StateMachineBehaviour 콤보 동기화
+- **A안 채택**: 좌클릭 콤보 인덱스에 따라 우클릭 강공이 변형 — 인덱스 0/Idle/Move → 기본 HeavyAttack, 인덱스 3/Attack2 후 → Finisher. 중간 변형(인덱스 1·2)은 #6 범위로 이월.
+- **콤보 인덱스 동기화 — StateMachineBehaviour 방식**: 코드의 `leftComboIndex`는 입력 콜백에서 직접 변경하지 않고, Animator 상태 진입 시점에 `ComboIndexBehaviour`/`ComboResetBehaviour`가 갱신.
+- **이유**: 입력 발생 ≠ 실제 콤보 진행. Animator의 콤보 윈도우 안에서 *실제로 전이된 순간*에만 인덱스가 변해야 정확.
+- **영향**: `Assets/Script/Character/ComboIndexBehaviour.cs`, `ComboResetBehaviour.cs`. 위 `PlayerStateMachine`도 동일 패턴 재활용.
+
+---
+
+## 2026-05-19
+
+### 1주차 빌드 스코프 — 풀버전 대신 **MVP**로 축소
+- **결정**: 1주차 빌드 목표를 "5웨이브 → 보스 → 클리어가 한 번 돌아가는 상태"로 한정. 풀버전(SO/UI 패널/완전한 시스템화)은 2주차 이후로 미룸.
+- **이유**: 컨디션 + 실작업 가능 시간(약 22~25h)이 풀버전 견적(27~42h)에 못 미침. 빌드 자체가 1주차 핵심 산출물이라 누락 방지가 최우선.
+- **자른/축소 항목**:
+  - `#3 스텟` → ScriptableObject 없이 `PlayerStats` 컴포넌트 `int` 4개로 시작. SO화는 2주차 리팩토링.
+  - `#4 HP/스테미나` → HP 우선. 스테미나는 시스템만 + 단순 슬라이더.
+  - `#5/#6/#7` → 콤보 윈도우 조율·쿨타임 헬퍼 클래스화는 폴리싱. 1주차는 동작 골격만.
+  - `#7 회피` → i-frame + 이동만. 쿨타임은 if 한 줄 변수로.
+  - `#8 경험치/레벨업` → **자동 스텟 분배**(레벨업 시 모든 스텟 +1). 분배 UI 패널은 2주차.
+  - `#M1 몬스터` → NavMeshAgent 대신 `MoveTowards` + 근접 공격. SO 대신 컴포넌트 직접 값.
+  - `#B1 보스` → 몬스터 코드 재사용, 스케일/HP만 차별화. 별도 AI 미작성.
+  - `#S1 맵` → Plane + 벽 콜라이더 4개 + 스폰 포인트만.
+  - `#S2 웨이브` → 데이터 SO 없이 코드 배열로.
+  - `#13 데미지 팝업` → 1주차 빌드 비포함. 2주차 폴리싱.
+- **영향**: 위 축소 항목들은 2주차/3주차 정식 구현 시 별도 리팩토링 이슈로 등록 예정.
+
+### 1주차 작업 일별 일정 — 컨디션 우선, 오늘은 #5만
+- **결정**: 화 저녁(오늘)은 #5 콤보 마무리까지만 가볍게. 수~금오전 분배는 아래.
+- **일정**:
+  - **화 저녁(오늘)**: #5 좌클릭 콤보 마무리 — Animator 정합성, 트리거/리셋. 데미지 적용은 내일로.
+  - **수**: 오전 — #3 스텟 컴포넌트 + #4 HP/스테미나 시스템. 오후 — UI 게이지 + #5 데미지 적용 + 더미 적으로 테스트.
+  - **목**: 오전 — #M1 몬스터 + #6 강공 스테미나 연동. 오후 — #7 회피 + #8 레벨업 자동분배.
+  - **금 오전**: #S1 맵 + #S2 웨이브 + #B1 보스 + #BUILD1 빌드/영상.
+- **이유**: 컨디션 회복 + 막판 빌드 실패 사고 방지(영상 캡처 시간 확보).
+
+---
+
 ## 2026-05-18
 
 ### #2 입력 시스템 정리 완료 — 책임 분리 (SRP) 아키텍처
