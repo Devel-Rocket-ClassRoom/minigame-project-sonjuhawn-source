@@ -20,6 +20,7 @@ public class PlayerCombat : MonoBehaviour
 
     private PlayerInputHandler input;
     private CharacterStateMachine state;
+    private CharacterMover mover;
     private StaminaSystem stamina;
     private Animator anim;
     private Rigidbody rb;
@@ -41,6 +42,7 @@ public class PlayerCombat : MonoBehaviour
     {
         input = GetComponent<PlayerInputHandler>();
         state = GetComponent<CharacterStateMachine>();
+        mover = GetComponent<CharacterMover>();
         stamina = GetComponent<StaminaSystem>();    
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
@@ -118,7 +120,9 @@ public class PlayerCombat : MonoBehaviour
             default: return;
         }
 
-        if (!stamina.TryConsume(cost))   // 스테미나 부족 시 발동 안 함
+        bool canUse = stamina.TryConsume(cost);
+
+        if (!canUse)
             return;
 
         SetTriggerExclusive(triggerHash);
@@ -162,8 +166,6 @@ public class PlayerCombat : MonoBehaviour
     {
         leftComboIndex = value;
     }
-
-
 
     public void ResetCombo()
     {

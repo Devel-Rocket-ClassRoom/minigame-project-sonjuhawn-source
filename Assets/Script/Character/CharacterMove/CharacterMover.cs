@@ -26,8 +26,11 @@ public class CharacterMover : MonoBehaviour
 
     private void Update()
     {
-        if (!state.IsState(PlayerState.Idle) && !state.IsState(PlayerState.Moving))
+        if (!CanMove())
+        {
+            moveDir = Vector3.zero;
             return;
+        }
 
         Vector2 moveInput = input.MoveInput;
         Vector3 camForward = Vector3.ProjectOnPlane(cam.transform.forward, Vector3.up).normalized;
@@ -43,6 +46,21 @@ public class CharacterMover : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!CanMove())
+            return;
+
         rb.MovePosition(rb.position + moveDir * moveSpeed * Time.fixedDeltaTime);
+    }
+
+    bool CanMove()
+    {
+        return state.IsState(PlayerState.Idle) ||
+               state.IsState(PlayerState.Moving);
+    }
+
+    public void EnterAttack()
+    {
+        moveDir = Vector3.zero;
+        rb.linearVelocity = Vector3.zero;
     }
 }
