@@ -8,6 +8,21 @@
 
 ## 2026-05-20
 
+### #3 스탯 시스템 — 하이브리드 도입 (C안, 어제 MVP 결정 갱신)
+- **결정**: PlayerStats 컴포넌트 + int 4개(Strength/Agility/Vitality/Stamina)로 시작하되, **외부 인터페이스를 `IStatProvider`로 추상화**.
+- **이유**: 일정 압박 + 향후 SO + Modifier 마이그레이션 안전성 확보. 2주차에 PlayerStats 내부 구현을 SO 기반으로 바꿔도 외부 시스템(HP/Combat/UI) 영향 없음. 현업에서 캐릭터 스탯이 컴포넌트 int로 끝나지 않는 점을 미래 비용으로 인식.
+- **인터페이스**:
+  - `int Strength/Agility/Vitality/Stamina { get; }` 읽기 전용
+  - `event Action OnStatChanged` 이벤트 (UI/HP/Combat 자동 반응)
+- **#3 범위 (MVP)**:
+  - `IStatProvider` 인터페이스
+  - `PlayerStats : MonoBehaviour, IStatProvider` (int 4개 + `GrowAll(int amount = 1)` + 이벤트 발행)
+- **2주차 리팩토링 예정**:
+  - `CharacterStatData` (SO) — 베이스 스탯
+  - `StatModifier` 시스템 — Flat / PercentAdd / PercentMul 모디파이어 타입
+  - 무기/버프/장비/스킬 강화/유물이 모두 Modifier 인프라로 결합
+- **영향**: HP/스테미나(#4)·공격력 계산(#5/#6) 등 모든 의존 시스템이 `PlayerStats` 직접 참조 대신 `IStatProvider`에 의존. 어제(2026-05-19) MVP 결정의 `#3 스텟` 항목을 이 결정으로 갱신.
+
 ### 캐릭터 상태 머신 — `PlayerState` enum 도입 시점은 #7 (B안 채택)
 - **결정**: `PlayerState` enum + `PlayerStateMachine` 컴포넌트를 #7 회피 작업 시작 시점에 도입.
 - **enum 후보**: `Idle, Moving, Attacking, HeavyAttacking, Dodging, Damaged, Dead`
