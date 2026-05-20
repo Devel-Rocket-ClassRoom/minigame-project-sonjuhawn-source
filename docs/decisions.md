@@ -6,6 +6,29 @@
 
 ---
 
+## 2026-05-20
+
+### 캐릭터 상태 머신 — `PlayerState` enum 도입 시점은 #7 (B안 채택)
+- **결정**: `PlayerState` enum + `PlayerStateMachine` 컴포넌트를 #7 회피 작업 시작 시점에 도입.
+- **enum 후보**: `Idle, Moving, Attacking, HeavyAttacking, Dodging, Damaged, Dead`
+- **보조 플래그**: `IsInvincible` (enum으로 표현 어려운 동시 상태 — 회피·피격 무적)
+- **상태 변경 주체**: Animator StateMachineBehaviour가 `OnStateEnter`에서 갱신 (Animator를 진실의 원천으로 — #5 `ComboIndexBehaviour`와 같은 패턴 재활용).
+- **이유**:
+  - #6까지는 enum 없이도 동작 가능 (강공은 단순 트리거).
+  - #7 회피의 i-frame이 enum의 가장 자연스러운 첫 사용처 — 도입 명분 명확.
+  - 공격 중 이동 락, 피격 처리, 사망 처리에도 같은 인프라 재사용.
+- **영향**:
+  - `Assets/Script/Character/PlayerState.cs`, `PlayerStateMachine.cs` 추가 예정 (#7).
+  - 기존 `CharacterMover`/`PlayerCombat`이 state 확인 후 동작 분기.
+
+### #5 누락 결정 보충 — A안 채택 + StateMachineBehaviour 콤보 동기화
+- **A안 채택**: 좌클릭 콤보 인덱스에 따라 우클릭 강공이 변형 — 인덱스 0/Idle/Move → 기본 HeavyAttack, 인덱스 3/Attack2 후 → Finisher. 중간 변형(인덱스 1·2)은 #6 범위로 이월.
+- **콤보 인덱스 동기화 — StateMachineBehaviour 방식**: 코드의 `leftComboIndex`는 입력 콜백에서 직접 변경하지 않고, Animator 상태 진입 시점에 `ComboIndexBehaviour`/`ComboResetBehaviour`가 갱신.
+- **이유**: 입력 발생 ≠ 실제 콤보 진행. Animator의 콤보 윈도우 안에서 *실제로 전이된 순간*에만 인덱스가 변해야 정확.
+- **영향**: `Assets/Script/Character/ComboIndexBehaviour.cs`, `ComboResetBehaviour.cs`. 위 `PlayerStateMachine`도 동일 패턴 재활용.
+
+---
+
 ## 2026-05-19
 
 ### 1주차 빌드 스코프 — 풀버전 대신 **MVP**로 축소

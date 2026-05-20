@@ -65,8 +65,8 @@ public class PlayerCombat : MonoBehaviour
         switch (leftComboIndex)
         {
             case 0: SetTriggerExclusive(HeavyAttack0Hash); break;
-            case 1: SetTriggerExclusive(HeavyDashHash);    break;
-            case 2: SetTriggerExclusive(HeavyAttack1Hash); break;
+            case 1: SetTriggerExclusive(HeavyAttack1Hash);    break;
+            case 2: SetTriggerExclusive(HeavyDashHash); break;
             case 3: SetTriggerExclusive(FinisherHash);     break;
         }
         // 향후 자리: 스테미나 소모 체크
