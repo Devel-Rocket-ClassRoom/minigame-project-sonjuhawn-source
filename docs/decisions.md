@@ -8,6 +8,20 @@
 
 ## 2026-05-20
 
+### 스테미나 타이밍 — 회복은 Animation Event 즉시 적용, 소모는 2주차 검토
+- **결정**:
+  - **회복**: Animation Event로 변경 (#7 단계). 기존 OnStateExit(모션 종료 시) 회복은 손맛 약함 → 모션 중 타격 프레임에 회복.
+  - **소모**: 1주차에는 현재 트리거 발동 시점 그대로(`TryConsume` 한 줄). 2주차 폴리싱에서 StateMachineBehaviour OnStateEnter로 마이그레이션 검토.
+- **이유**:
+  - 액션감의 핵심은 *타격 프레임 정확도*. 회복이 모션 끝난 후라 어색.
+  - 소모는 트리거→Animator 진입 시점 차이가 1~2프레임이라 1주차에선 미세 차이로 무시.
+- **향후 마이그레이션 (#M1 이후)**:
+  - 회복을 *적중 시에만* — Animation Event(예: `OnAttackHit`)에서 OverlapSphere로 적 탐지 → 적중 시에만 `stamina.Recover()`. 헛스윙은 회복 X.
+- **영향**:
+  - `PlayerCombat`에 `OnAttackRecover` (또는 향후 `OnAttackHit`) public 메서드.
+  - 기존 `StaminaRecoverBehaviour` 제거 (Animator 상태에서 Remove Behaviour).
+  - Attack0/1/2 클립에 Animation Event 추가.
+
 ### 레벨업 스탯 분배 — 정비 타이밍 누적 분배 방식 (옵션 2 채택)
 - **결정**: 레벨업 시 즉시 분배 UI 띄우지 않음. *전투 중에는 포인트만 누적* + 즉시 시각 피드백("Level Up!"), 분배 UI는 웨이브 클리어 후 정비 시간에 표시.
 - **이유**:

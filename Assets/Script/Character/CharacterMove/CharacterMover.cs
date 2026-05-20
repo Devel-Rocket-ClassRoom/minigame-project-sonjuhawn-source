@@ -1,4 +1,5 @@
 using UnityEngine;
+using static CharacterStateMachine;
 
 public class CharacterMover : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class CharacterMover : MonoBehaviour
     [SerializeField] private Camera cam;
 
     private PlayerInputHandler input;
+    private CharacterStateMachine state;
     private Rigidbody rb;
     private Animator anim;
 
@@ -17,12 +19,16 @@ public class CharacterMover : MonoBehaviour
     private void Awake()
     {
         input = GetComponent<PlayerInputHandler>();
+        state = GetComponent<CharacterStateMachine>();
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
     }
 
     private void Update()
     {
+        if (!state.IsState(PlayerState.Idle) && !state.IsState(PlayerState.Moving))
+            return;
+
         Vector2 moveInput = input.MoveInput;
         Vector3 camForward = Vector3.ProjectOnPlane(cam.transform.forward, Vector3.up).normalized;
         Vector3 camRight = Vector3.ProjectOnPlane(cam.transform.right, Vector3.up).normalized;
