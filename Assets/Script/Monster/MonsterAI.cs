@@ -94,7 +94,7 @@ public class MonsterAI : MonoBehaviour
         if (health.IsDead || player == null) return;
 
         float distance = Vector3.Distance(transform.position, player.position);
-        if (distance <= data.attackRange + 0.5f)
+        if (distance <= data.attackRange)
         {
             var playerDamage = player.GetComponent<HealthSystem>();
             if (playerDamage != null)

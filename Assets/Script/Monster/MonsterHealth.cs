@@ -13,6 +13,7 @@ public class MonsterHealth : MonoBehaviour, IDamageable
 
     public event Action<int, int> OnHpChanged;
     public event Action OnDeath;
+    public event Action OnDamaged;
 
     private void Awake()
     {
@@ -28,7 +29,6 @@ public class MonsterHealth : MonoBehaviour, IDamageable
         }
     }
 
-
     public void TakeDamage(int amount)
     {
         if (IsDead) return;
@@ -38,5 +38,7 @@ public class MonsterHealth : MonoBehaviour, IDamageable
 
         if (currentHp == 0)
             OnDeath?.Invoke();
+        else
+            OnDamaged?.Invoke();
     }
 }

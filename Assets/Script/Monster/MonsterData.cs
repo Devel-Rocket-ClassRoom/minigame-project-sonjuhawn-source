@@ -22,4 +22,7 @@ public class MonsterData : ScriptableObject
     [Header("Rewards")]
     public int expReward = 10;
     public int goldReward = 5;
+
+    [Header("Stagger")]
+    public float staggerDuration = 0.4f;
 }
