@@ -29,6 +29,7 @@ public class PlayerCombat : MonoBehaviour
     private static readonly int HeavyDashHash = Animator.StringToHash("HeavyDash");
     private static readonly int FinisherHash = Animator.StringToHash("Finisher");
     private static readonly int DodgeHash = Animator.StringToHash("Dodge");
+    private static readonly int DeadHash = Animator.StringToHash("Dead");
 
     // 모든 액션 트리거 한 곳에 모아둠 — 새 트리거 추가 시 여기에도 함께 추가
     private static readonly int[] ActionTriggers =
@@ -47,6 +48,7 @@ public class PlayerCombat : MonoBehaviour
 
     [SerializeField] private GameObject hitbox;   // 위의 Hitbox 자식 GameObject
     [SerializeField] private SwordHitbox sword;
+    [SerializeField] private HealthSystem health;
 
     [SerializeField] private float baseAnimSpeed = 1f;
     [SerializeField] private float speedPerAgility = 0.02f;
@@ -71,6 +73,7 @@ public class PlayerCombat : MonoBehaviour
     {
         input = GetComponent<PlayerInputHandler>();
         state = GetComponent<CharacterStateMachine>();
+        health = GetComponent<HealthSystem>();
         stamina = GetComponent<StaminaSystem>();
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
@@ -86,7 +89,8 @@ public class PlayerCombat : MonoBehaviour
         input.OnAttack += HandleAttack;
         input.OnHeavyAttack += HandleHeavyAttack;
         input.OnDodge += HandleDodge;
-        stats.OnStatChanged += RecalculateAnimSpeed;   // 추가
+        stats.OnStatChanged += RecalculateAnimSpeed;
+        health.OnDeath += HandleDeath;
         RecalculateAnimSpeed();
     }
 
@@ -95,6 +99,7 @@ public class PlayerCombat : MonoBehaviour
         input.OnAttack -= HandleAttack;
         input.OnHeavyAttack -= HandleHeavyAttack;
         input.OnDodge -= HandleDodge;
+        health.OnDeath -= HandleDeath;
         stats.OnStatChanged -= RecalculateAnimSpeed;
     }
 
@@ -204,6 +209,13 @@ public class PlayerCombat : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
     }
+
+    private void HandleDeath()
+    {
+        state.ChangeState(PlayerState.Dead);
+        SetTriggerExclusive(DeadHash);
+    }
+
     public void SetComboIndex(int value)
     {
         leftComboIndex = value;
