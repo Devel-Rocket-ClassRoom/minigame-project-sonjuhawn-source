@@ -92,10 +92,10 @@ public class MonsterController : MonoBehaviour
         Anim.SetTrigger(DamageHash);
     }
     private void HandleDamaged()
-    {
-        if (Health.IsDead) return;             // 안전장치
-        ChangeState(new MonsterDamagedState());
-    }
+{
+    if (Health.IsDead) return;             // 안전장치
+    ChangeState(new MonsterDamagedState());
+}
 
     private void HandleDeath()
     {

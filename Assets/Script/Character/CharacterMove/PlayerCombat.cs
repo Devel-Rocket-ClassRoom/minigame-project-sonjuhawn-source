@@ -1,6 +1,25 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using static CharacterStateMachine;
+
+public enum AttackType
+{
+    Light1,
+    Light2,
+    Light3,
+    Heavy1,
+    Heavy2,
+    HeavyDash,        // 좌클 2타 후 강공
+    HeavyFinisher,    // 좌클 3타 후 강공
+}
+
+[System.Serializable]
+public class AttackEntry
+{
+    public AttackType type;
+    public float multiplier;
+}
 
 public class PlayerCombat : MonoBehaviour
 {
@@ -20,12 +39,14 @@ public class PlayerCombat : MonoBehaviour
 
     private PlayerInputHandler input;
     private CharacterStateMachine state;
-    private CharacterMover mover;
     private StaminaSystem stamina;
     private Animator anim;
     private Rigidbody rb;
 
     private int leftComboIndex = 0;
+
+    [SerializeField] private GameObject hitbox;   // 위의 Hitbox 자식 GameObject
+    [SerializeField] private SwordHitbox sword;
 
     [SerializeField] private float dodgeDistance = 3f;
     [SerializeField] private float dodgeDuration = 0.3f;
@@ -38,15 +59,23 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private int heavyDashCost = 35;
     [SerializeField] private int finisherCost = 50;
 
+    private IStatProvider stats;
+
+    [SerializeField] private List<AttackEntry> attackTable;
+    private Dictionary<AttackType, float> multiplierMap;
+
     private void Awake()
     {
         input = GetComponent<PlayerInputHandler>();
         state = GetComponent<CharacterStateMachine>();
-        mover = GetComponent<CharacterMover>();
-        stamina = GetComponent<StaminaSystem>();    
+        stamina = GetComponent<StaminaSystem>();
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
-        
+        stats = GetComponent<IStatProvider>();
+
+        multiplierMap = new Dictionary<AttackType, float>();
+        foreach (var e in attackTable)
+            multiplierMap[e.type] = e.multiplier;
     }
 
     private void OnEnable()
@@ -101,21 +130,21 @@ public class PlayerCombat : MonoBehaviour
 
         switch (leftComboIndex)
         {
-            case 0: 
-                cost = heavyAttack0Cost; 
-                triggerHash = HeavyAttack0Hash; 
+            case 0:
+                cost = heavyAttack0Cost;
+                triggerHash = HeavyAttack0Hash;
                 break;
-            case 1: 
-                cost = heavyAttack1Cost; 
-                triggerHash = HeavyAttack1Hash; 
+            case 1:
+                cost = heavyAttack1Cost;
+                triggerHash = HeavyAttack1Hash;
                 break;
-            case 2: 
-                cost = heavyDashCost; 
-                triggerHash = HeavyDashHash; 
+            case 2:
+                cost = heavyDashCost;
+                triggerHash = HeavyDashHash;
                 break;
-            case 3: 
-                cost = finisherCost; 
-                triggerHash = FinisherHash; 
+            case 3:
+                cost = finisherCost;
+                triggerHash = FinisherHash;
                 break;
             default: return;
         }
@@ -126,6 +155,12 @@ public class PlayerCombat : MonoBehaviour
             return;
 
         SetTriggerExclusive(triggerHash);
+    }
+    public void SetAttackType(AttackType type)
+    {
+        if (!multiplierMap.TryGetValue(type, out float mult)) mult = 1f;
+        int dmg = Mathf.RoundToInt(stats.Strength * mult);
+        sword.SetDamage(dmg);
     }
 
     private void HandleDodge()
@@ -161,7 +196,6 @@ public class PlayerCombat : MonoBehaviour
             yield return null;
         }
     }
-
     public void SetComboIndex(int value)
     {
         leftComboIndex = value;
@@ -174,4 +208,6 @@ public class PlayerCombat : MonoBehaviour
         for (int i = 0; i < ActionTriggers.Length; i++)
             anim.ResetTrigger(ActionTriggers[i]);
     }
+    public void EnableHitbox() => hitbox.SetActive(true);
+    public void DisableHitbox() => hitbox.SetActive(false);
 }

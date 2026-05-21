@@ -20,21 +20,14 @@ public class MonsterHealth : MonoBehaviour, IDamageable
         if (data != null) currentHp = data.maxHp;
     }
 
-    private void Update()
-    {
-        if (UnityEngine.Input.GetKeyDown(KeyCode.M))
-        {
-            TakeDamage(10);
-            Debug.Log($"Monster HP: {currentHp}/{MaxHp}, Dead: {IsDead}");
-        }
-    }
-
     public void TakeDamage(int amount)
     {
         if (IsDead) return;
 
         currentHp = Mathf.Max(currentHp - amount, 0);
         OnHpChanged?.Invoke(currentHp, MaxHp);
+
+        Debug.Log(amount);
 
         if (currentHp == 0)
             OnDeath?.Invoke();

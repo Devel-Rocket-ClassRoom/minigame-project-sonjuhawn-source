@@ -22,3 +22,4 @@ MonoBehaviour:
   attackCooldown: 2
   expReward: 10
   goldReward: 5
+  staggerDuration: 0.4

@@ -119,6 +119,73 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &21028671
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 21028672}
+  - component: {fileID: 21028673}
+  - component: {fileID: 21028674}
+  m_Layer: 0
+  m_Name: HitBox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &21028672
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 21028671}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1388117911}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &21028673
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 21028671}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.24932313, y: 0.051199306, z: 0.7903122}
+  m_Center: {x: -0.0012176355, y: -0.0018310064, z: 0.47622022}
+--- !u!114 &21028674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 21028671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de83d22411a514f47aaddcffaff38241, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SwordHitbox
+  damage: 10
 --- !u!1 &125297742
 GameObject:
   m_ObjectHideFlags: 0
@@ -1119,7 +1186,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1194394832456452, guid: 0276fd68d2eb8e64aa562b0c13ae1bf9, type: 3}
       propertyPath: m_Name
-      value: F06
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 1194394832456452, guid: 0276fd68d2eb8e64aa562b0c13ae1bf9, type: 3}
       propertyPath: m_TagString
@@ -1179,6 +1246,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4220219224533934, guid: 0276fd68d2eb8e64aa562b0c13ae1bf9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 398910245}
+    - targetCorrespondingSourceObject: {fileID: 4541369268204950, guid: 0276fd68d2eb8e64aa562b0c13ae1bf9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 21028672}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1194394832456452, guid: 0276fd68d2eb8e64aa562b0c13ae1bf9, type: 3}
       insertIndex: -1
@@ -1339,7 +1409,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 961739749}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.14938267, y: -0.0025379232, z: 0.00038342536, w: 0.98877615}
+  m_LocalRotation: {x: 0.14938267, y: -0.002537923, z: 0.00038342533, w: 0.98877615}
   m_LocalPosition: {x: 0.094760306, y: 0.5539342, z: -0.4634347}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1513,6 +1583,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc5a945ba961a7a4b9ed56748808de10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
+  hitbox: {fileID: 21028671}
+  sword: {fileID: 21028674}
   dodgeDistance: 0.1
   dodgeDuration: 2
   dodgeCooldown: 1
@@ -1521,6 +1593,21 @@ MonoBehaviour:
   heavyAttack1Cost: 30
   heavyDashCost: 35
   finisherCost: 50
+  attackTable:
+  - type: 0
+    multiplier: 1
+  - type: 1
+    multiplier: 1.1
+  - type: 2
+    multiplier: 1.5
+  - type: 3
+    multiplier: 1.8
+  - type: 4
+    multiplier: 2.2
+  - type: 5
+    multiplier: 2
+  - type: 6
+    multiplier: 2
 --- !u!114 &1026996440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1913,6 +2000,11 @@ RectTransform:
   m_AnchoredPosition: {x: -88, y: 0}
   m_SizeDelta: {x: 20.1958, y: 20.7913}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!4 &1388117911 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4541369268204950, guid: 0276fd68d2eb8e64aa562b0c13ae1bf9, type: 3}
+  m_PrefabInstance: {fileID: 863967265}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1439942030
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2100,7 +2192,7 @@ PrefabInstance:
       addedObject: {fileID: 1801396295}
     - targetCorrespondingSourceObject: {fileID: 1319869897745625822, guid: e69dd2af53627174a95874b916927ee9, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1801396296}
+      addedObject: {fileID: 1801396297}
   m_SourcePrefab: {fileID: 100100000, guid: e69dd2af53627174a95874b916927ee9, type: 3}
 --- !u!1 &1489624074
 GameObject:
@@ -2271,7 +2363,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1489624074}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.14938265, y: -0.0025379243, z: 0.0003834254, w: 0.98877615}
+  m_LocalRotation: {x: 0.14938268, y: -0.002537923, z: 0.0003834252, w: 0.98877615}
   m_LocalPosition: {x: 0.09176001, y: 1.876739, z: -4.647565}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2588,7 +2680,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterHealth
   data: {fileID: 11400000, guid: 4386f117891049d4796ad3fe6ab30e16, type: 2}
---- !u!114 &1801396296
+--- !u!114 &1801396297
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2597,9 +2689,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1801396290}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c0f0a9e46c98d74b9db9f14cbc82ecf, type: 3}
+  m_Script: {fileID: 11500000, guid: c90edf744ef3fd143b5d5138f56aa5cc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonsterAI
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterController
   data: {fileID: 11400000, guid: 4386f117891049d4796ad3fe6ab30e16, type: 2}
 --- !u!1 &1847740315
 GameObject:
