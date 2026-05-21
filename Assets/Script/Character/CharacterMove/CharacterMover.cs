@@ -77,6 +77,6 @@ public class CharacterMover : MonoBehaviour
 
     private void RecalculateSpeed()
     {
-        moveSpeed = baseSpeed + Mathf.Max(0, stats.Agility - 10) * speedPerAgility;
+        moveSpeed = baseSpeed + Mathf.Max(0, stats.Agility - 10) * speedPerAgility * 0.5f;
     }
 }
