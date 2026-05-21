@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class HealthSystem : MonoBehaviour
+public class HealthSystem : MonoBehaviour, IDamageable
 {
     [SerializeField] private int hpPerVitality = 10;  // 체력 1당 HP 변환 비율
 
@@ -12,6 +12,8 @@ public class HealthSystem : MonoBehaviour
 
     public int CurrentHp => currentHp;
     public int MaxHp => maxHp;
+
+    public bool IsDead => currentHp <= 0;
 
     public event Action<int, int> OnHpChanged;  // (current, max) — UI 갱신용
     public event Action OnDeath;

@@ -1,34 +1,66 @@
-# Minigame Project — 액션 핵앤슬래시 스테이지 클리어
+# Minigame Project Context
 
-> 검은사막 캐릭터 조작 + 몬스터 무리 사냥 + 스테이지 방식 (5~10 스테이지 예정)
+## 장르
+검은사막 스타일 액션 핵앤슬래시 + 웨이브 클리어 구조.
 
-**관련 문서**
-- 결정 로그(누적): [`docs/decisions.md`](./docs/decisions.md) — 진행 중 내린 설계 결정. **새 세션에서는 이 문서를 먼저 읽기.**
-- Fork GUI 워크플로 (두 PC 동기화·트러블슈팅): [`docs/fork-workflow.md`](./docs/fork-workflow.md)
-- 1주차 캐릭터 이슈 초안: [`docs/week1-character-issues.md`](./docs/week1-character-issues.md)
-- 1주차 환경/콘텐츠 이슈 초안: [`docs/week1-environment-issues.md`](./docs/week1-environment-issues.md)
+## 핵심 전투
+- 좌클: 기본공격 3타 (스태미나 회복)
+- 우클: 강공 콤보 (스태미나 소모)
+- Space: 회피 + i-frame
+- 추후 스킬:
+  - Q 가드 반격
+  - Shift+Q 다운 공격
+  - Shift+좌클 회전 공격
 
----
+## 구조
+- 단일 맵 웨이브 진행
+- 5~10 스테이지
+- 클리어 시:
+  - 스탯 강화
+  - 스킬 선택/강화
+  - 상점 진입
 
-## 1. 컨셉 & 구현 범위
+## 플레이어 시스템
+- InputSystem 사용
+- 상태머신 기반
+- 스태미나 사용:
+  - 기본공격 회복
+  - 강공/회피/스킬 소모
+- 콤보 입력 버퍼 구현 중
 
-<<<<<<< Updated upstream
-검은사막 캐릭터 전투를 모티브로 한 액션 핵앤슬래시. 단일 맵 안에서 웨이브를 진행하고, 클리어마다 스킬/스텟을 강화하며 마지막에 보스를 잡는 구조.
-
-### 1-1. 전투 시스템 (검은사막 모티브)
-=======
 ## 몬스터
 - 근거리
 - 강화형
 - 원거리
-- State기반 
+- FSM
 
 ## 보스
 - 추적
 - 근접 공격
 - 거리 벌어지면 특수패턴
-- BT기반
->>>>>>> Stashed changes
+- BT 시간안되면 FSM
+
+## 기술 목표
+- InputSystem 기반 커맨드 입력
+- ScriptableObject 데이터 관리
+- 상태머신 AI
+- Dictionary/List 활용
+- 세이브 시스템
+
+## 현재 구현 상태
+- 캐릭터 이동
+- 기본공격
+- 강공
+- 회피
+- 스태미나
+
+## 작업 원칙
+- 사용자가 직접 코드 작성
+- Claude는 설계/디버깅/리뷰 위주
+- 필요한 파일만 최소 읽기
+검은사막 캐릭터 전투를 모티브로 한 액션 핵앤슬래시. 단일 맵 안에서 웨이브를 진행하고, 클리어마다 스킬/스텟을 강화하며 마지막에 보스를 잡는 구조.
+
+### 1-1. 전투 시스템 (검은사막 모티브)
 
 | # | 입력 | 액션 | 비고 |
 |---|---|---|---|
@@ -134,3 +166,4 @@
 - 새 InputSystem 사용 (`Assets/InputSystem_Actions.inputactions`)
 - 씬: `SampleScene.unity`, `CharacterTestScene.unity` — 캐릭터 테스트 단계
 - Imported: `Suriyun/UnityChanToonShaderVer2` (URP 2.2.3)
+

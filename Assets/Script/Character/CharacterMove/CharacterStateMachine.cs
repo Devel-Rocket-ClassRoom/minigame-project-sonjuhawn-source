@@ -29,8 +29,14 @@ public class CharacterStateMachine : MonoBehaviour
     {
         if (CurrentState == newState) return;  
         CurrentState = newState;
+
+        if (newState == PlayerState.Attacking ||
+            newState == PlayerState.HeavyAttacking)
+        {
+            GetComponent<CharacterMover>().EnterAttack();
+        }
+
         OnStateChanged?.Invoke(newState);
-        Debug.Log($"State: {newState}");
     }
 
     public bool IsState(PlayerState state)
