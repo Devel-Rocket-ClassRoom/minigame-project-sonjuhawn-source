@@ -4,6 +4,7 @@
 
 **관련 문서**
 - 결정 로그(누적): [`docs/decisions.md`](./docs/decisions.md) — 진행 중 내린 설계 결정. **새 세션에서는 이 문서를 먼저 읽기.**
+- Fork GUI 워크플로 (두 PC 동기화·트러블슈팅): [`docs/fork-workflow.md`](./docs/fork-workflow.md)
 - 1주차 캐릭터 이슈 초안: [`docs/week1-character-issues.md`](./docs/week1-character-issues.md)
 - 1주차 환경/콘텐츠 이슈 초안: [`docs/week1-environment-issues.md`](./docs/week1-environment-issues.md)
 
