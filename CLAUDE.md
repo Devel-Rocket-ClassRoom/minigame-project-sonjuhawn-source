@@ -142,6 +142,35 @@ Contains:
 * AttackTypeBehaviour(StateMachineBehaviour)
   syncs attack state with damage type
 
+### Progression / Stats
+
+* ExperienceSystem on Player
+
+  * AddExp / SpendPoint / OnLevelUp / OnExpChanged
+  * formula: ExpForLevel = 100 + (level-1) × 50
+  * pendingPoints accumulated per level
+* MonsterController.HandleDeath drops `MonsterData.expReward` to player
+* StatDistributionPanel UI
+
+  * pops on OnLevelUp, pauses game (Time.timeScale = 0)
+  * cursor unlocked while open
+  * confirm button gated by pendingPoints == 0
+* Stat → ability mapping (baseline = 10, bonus from stat-10)
+
+  * Strength → damage (Strength × multiplier; baseline-equivalent)
+  * Agility → move speed + anim.speed
+  * Vitality → maxHp
+  * Stamina → maxStamina + recover amount
+
+---
+
+## TODO / Improvements
+
+* HUD: EXP bar + level display (currently no in-game UI for exp/level)
+* AttackType-scoped anim.speed (currently affects Idle/Move too)
+* Remove dev debug keys (HealthSystem J, StaminaSystem U/I, MonsterSpawnerDebug M)
+* Imported folder anim event ownership (events live in paid asset .anim files)
+
 ---
 
 ## Tech Goals
@@ -192,7 +221,7 @@ Contains:
 * remaining monsters
 * boss skills
 * shop
-* up to 10 waves
+* up to 5~10 waves
 
 ### Week 3
 

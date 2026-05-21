@@ -5,7 +5,10 @@ public class CharacterMover : MonoBehaviour
 {
     private static readonly int MoveHash = Animator.StringToHash("Move");
 
-    [SerializeField] private float moveSpeed = 3f;
+    [SerializeField] private float moveSpeed;
+    [SerializeField] private float baseSpeed = 5f;
+    [SerializeField] private float speedPerAgility = 0.2f;
+    private IStatProvider stats;
     [SerializeField] private float rotationSpeed = 2000f;
     [SerializeField] private Camera cam;
 
@@ -20,9 +23,17 @@ public class CharacterMover : MonoBehaviour
     {
         input = GetComponent<PlayerInputHandler>();
         state = GetComponent<CharacterStateMachine>();
+        stats = GetComponent<IStatProvider>();
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
     }
+
+    private void OnEnable()
+    {
+        stats.OnStatChanged += RecalculateSpeed;
+        RecalculateSpeed();
+    }
+    private void OnDisable() => stats.OnStatChanged -= RecalculateSpeed;
 
     private void Update()
     {
@@ -62,5 +73,10 @@ public class CharacterMover : MonoBehaviour
     {
         moveDir = Vector3.zero;
         rb.linearVelocity = Vector3.zero;
+    }
+
+    private void RecalculateSpeed()
+    {
+        moveSpeed = baseSpeed + Mathf.Max(0, stats.Agility - 10) * speedPerAgility;
     }
 }

@@ -4,9 +4,12 @@ using UnityEngine.UI;
 
 public class StatDistributionPanel : MonoBehaviour
 {
+    // === 시스템 참조 ===
+    [SerializeField] private GameObject panelRoot;   // 추가
     [SerializeField] private ExperienceSystem exp;
     [SerializeField] private PlayerStats stats;
 
+    // === UI 참조 ===
     [SerializeField] private TMP_Text pointsLabel;
     [SerializeField] private TMP_Text strengthValue;
     [SerializeField] private TMP_Text agilityValue;
@@ -14,13 +17,14 @@ public class StatDistributionPanel : MonoBehaviour
     [SerializeField] private TMP_Text staminaValue;
     [SerializeField] private Button confirmButton;
 
-    private void Awake() => gameObject.SetActive(false);
 
+    // === 이벤트 구독/해제 ===
     private void OnEnable()
     {
         exp.OnLevelUp += HandleLevelUp;
         stats.OnStatChanged += Refresh;
     }
+
     private void OnDisable()
     {
         exp.OnLevelUp -= HandleLevelUp;
@@ -29,30 +33,39 @@ public class StatDistributionPanel : MonoBehaviour
 
     private void HandleLevelUp(int newLevel)
     {
-        gameObject.SetActive(true);
-        Time.timeScale = 0f;
+        panelRoot.SetActive(true);
+        Time.timeScale = 0;
+        Cursor.visible = true;                      
+        Cursor.lockState = CursorLockMode.None;      
         Refresh();
     }
 
-    // 각 + 버튼이 호출 (Inspector에서 OnClick 연결)
     public void OnPlus(int statTypeInt)
     {
-        exp.SpendPoint((StatType)statTypeInt);
+        if(exp.SpendPoint((StatType)statTypeInt))
+            Refresh();
     }
 
     public void OnConfirm()
     {
-        Time.timeScale = 1f;
-        gameObject.SetActive(false);
+        Time.timeScale = 1;
+        Cursor.visible = false;                     
+        Cursor.lockState = CursorLockMode.Locked;
+        panelRoot.SetActive(false);
     }
 
     private void Refresh()
     {
-        pointsLabel.text = $"남은 포인트: {exp.PendingPoints}";
-        strengthValue.text = stats.Strength.ToString();
-        agilityValue.text = stats.Agility.ToString();
-        vitalityValue.text = stats.Vitality.ToString();
-        staminaValue.text = stats.Stamina.ToString();
-        confirmButton.interactable = (exp.PendingPoints == 0);
+        pointsLabel.text = $"Point: {exp.PendingPoints}";
+        strengthValue.text = $"{stats.Strength}";
+        agilityValue.text = $"{stats.Agility}";
+        vitalityValue.text = $"{stats.Vitality}";
+        staminaValue.text = $"{stats.Stamina}";
+
+        if (exp.PendingPoints == 0)
+            confirmButton.interactable = true;
+        else
+            confirmButton.interactable = false;
+
     }
 }
