@@ -99,6 +99,11 @@ public class MonsterController : MonoBehaviour
 
     private void HandleDeath()
     {
+        if (Target.TryGetComponent<ExperienceSystem>(out var exp))
+        {
+            exp.AddExp(data.expReward);   // ← 이 줄이 빠짐
+            Debug.Log($"[Exp] +{data.expReward} → Lv{exp.CurrentLevel}, {exp.CurrentExp}/{exp.ExpToNext}, points={exp.PendingPoints}");
+        }
         ChangeState(new MonsterDeadState());
     }
 }
