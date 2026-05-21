@@ -5545,7 +5545,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1616530446
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6586,6 +6586,14 @@ PrefabInstance:
       propertyPath: cam
       value: 
       objectReference: {fileID: 961739752}
+    - target: {fileID: 8909586843765618989, guid: 1d9c465c8ea972f4fb3272e740325228, type: 3}
+      propertyPath: dodgeDistance
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8909586843765618989, guid: 1d9c465c8ea972f4fb3272e740325228, type: 3}
+      propertyPath: dodgeDuration
+      value: 0.3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

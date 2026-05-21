@@ -27,8 +27,6 @@ public class MonsterHealth : MonoBehaviour, IDamageable
         currentHp = Mathf.Max(currentHp - amount, 0);
         OnHpChanged?.Invoke(currentHp, MaxHp);
 
-        Debug.Log(amount);
-
         if (currentHp == 0)
             OnDeath?.Invoke();
         else

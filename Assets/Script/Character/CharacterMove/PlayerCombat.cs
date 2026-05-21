@@ -194,12 +194,14 @@ public class PlayerCombat : MonoBehaviour
     {
         float elapsed = 0f;
         Vector3 velocity = direction * (dodgeDistance / dodgeDuration);
+        Debug.Log($"dir={direction}, dist={dodgeDistance}, dur={dodgeDuration}, vel={velocity}");
+
 
         while (elapsed < dodgeDuration)
         {
-            rb.MovePosition(rb.position + velocity * Time.deltaTime);
+            rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime);
             elapsed += Time.deltaTime;
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
     }
     public void SetComboIndex(int value)
@@ -210,7 +212,7 @@ public class PlayerCombat : MonoBehaviour
     public void ResetCombo()
     {
         leftComboIndex = 0;
-        // 잔존 트리거 일괄 정리 — Idle 복귀 시 호출
+
         for (int i = 0; i < ActionTriggers.Length; i++)
             anim.ResetTrigger(ActionTriggers[i]);
     }

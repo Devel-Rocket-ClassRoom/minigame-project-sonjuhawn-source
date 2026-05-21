@@ -37,12 +37,6 @@ public class CharacterMover : MonoBehaviour
 
     private void Update()
     {
-        if (!CanMove())
-        {
-            moveDir = Vector3.zero;
-            return;
-        }
-
         Vector2 moveInput = input.MoveInput;
         Vector3 camForward = Vector3.ProjectOnPlane(cam.transform.forward, Vector3.up).normalized;
         Vector3 camRight = Vector3.ProjectOnPlane(cam.transform.right, Vector3.up).normalized;
@@ -65,6 +59,7 @@ public class CharacterMover : MonoBehaviour
 
     bool CanMove()
     {
+
         return state.IsState(PlayerState.Idle) ||
                state.IsState(PlayerState.Moving);
     }
@@ -77,6 +72,6 @@ public class CharacterMover : MonoBehaviour
 
     private void RecalculateSpeed()
     {
-        moveSpeed = baseSpeed + Mathf.Max(0, stats.Agility - 10) * speedPerAgility * 0.5f;
+        moveSpeed = baseSpeed + Mathf.Max(0, stats.Agility - 10) * speedPerAgility * 0.2f;
     }
 }
