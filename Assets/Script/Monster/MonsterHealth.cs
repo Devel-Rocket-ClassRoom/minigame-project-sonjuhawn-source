@@ -34,4 +34,11 @@ public class MonsterHealth : MonoBehaviour, IDamageable
         else
             OnDamaged?.Invoke();
     }
+
+    public void Initialize(MonsterData d)
+    {
+        data = d;
+        currentHp = d.maxHp;
+        OnHpChanged?.Invoke(currentHp, MaxHp);
+    }
 }
