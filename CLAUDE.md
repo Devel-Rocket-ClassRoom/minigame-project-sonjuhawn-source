@@ -1,169 +1,215 @@
-# Minigame Project Context
+# Minigame Project Summary (for Claude token saving)
 
-## 장르
-검은사막 스타일 액션 핵앤슬래시 + 웨이브 클리어 구조.
+## Genre
 
-## 핵심 전투
-- 좌클: 기본공격 3타 (스태미나 회복)
-- 우클: 강공 콤보 (스태미나 소모)
-- Space: 회피 + i-frame
-- 추후 스킬:
-  - Q 가드 반격
-  - Shift+Q 다운 공격
-  - Shift+좌클 회전 공격
-
-## 구조
-- 단일 맵 웨이브 진행
-- 5~10 스테이지
-- 클리어 시:
-  - 스탯 강화
-  - 스킬 선택/강화
-  - 상점 진입
-
-## 플레이어 시스템
-- InputSystem 사용
-- 상태머신 기반
-- 스태미나 사용:
-  - 기본공격 회복
-  - 강공/회피/스킬 소모
-- 콤보 입력 버퍼 구현 중
-
-## 몬스터
-- 근거리
-- 강화형
-- 원거리
-- FSM
-
-## 보스
-- 추적
-- 근접 공격
-- 거리 벌어지면 특수패턴
-- BT 시간안되면 FSM
-
-## 기술 목표
-- InputSystem 기반 커맨드 입력
-- ScriptableObject 데이터 관리
-- 상태머신 AI
-- Dictionary/List 활용
-- 세이브 시스템
-
-## 현재 구현 상태
-- 캐릭터 이동
-- 기본공격
-- 강공
-- 회피
-- 스태미나
-
-## 작업 원칙
-- 사용자가 직접 코드 작성
-- Claude는 설계/디버깅/리뷰 위주
-- 필요한 파일만 최소 읽기
-검은사막 캐릭터 전투를 모티브로 한 액션 핵앤슬래시. 단일 맵 안에서 웨이브를 진행하고, 클리어마다 스킬/스텟을 강화하며 마지막에 보스를 잡는 구조.
-
-### 1-1. 전투 시스템 (검은사막 모티브)
-
-| # | 입력 | 액션 | 비고 |
-|---|---|---|---|
-| 1 | 좌클릭 | 기본공격 3타 | 스테미나 **회복** |
-| 2 | 우클릭 | 강공 2타 | 스테미나 소모 (쿨타임 없음, 후딜로 제한) |
-| 3 | Space | 회피 (짧은 거리 이동 + 무적 프레임) | 스테미나 단발 소모 + 짧은 쿨타임 (0.3~0.5초) |
-| 4 | Q (차징) | 가드 후 받은 데미지에 비례한 폭발 데미지 | 스테미나 소모 + 쿨타임 |
-| 5 | Shift + Q | 무기를 내려찍으며 범위 내 몬스터 다운 | 스테미나 소모 + 쿨타임 |
-| 6 | Shift + 좌클릭 | 무기를 들고 회전하며 이동, 스테미나 소진 시까지. 우클릭으로 캔슬 | 스테미나 지속 소모 |
-
-- **1, 2, 3번은 기본 제공 (핵심 무브셋)**
-- **4, 5, 6번은 스테이지 진행 중 하나씩 택해 강화하는 방식 (스킬)**
-- **자원/쿨타임 정책**
-  - 기본공격(1): 스테미나 **회복**
-  - 강공(2): 스테미나 소모만 (쿨타임 없음 — 모션 후딜로 자연 제한)
-  - 회피(3): 스테미나 소모 + 짧은 쿨타임 (i-frame 스팸 방지 목적)
-  - 스킬(4·5·6): 스테미나 소모 + 쿨타임
-- 회피 세부: 스테미나 소모량은 강공보다 적게(단발 기준), 짧은 무적 프레임(i-frame) 적용, 회피 스팸 방지용 짧은 쿨타임(0.3~0.5초) 부여. 스킬 강화에서 "회피 스테미나 감소", "i-frame 시간 증가" 등 옵션 검토 가능.
-
-### 1-2. 성장 시스템
-
-- **레벨업 시 스텟 업**: 힘 / 민첩 / 체력 / 스테미나
-- **첫 스테이지 클리어**: 스킬 택 1
-- **이후 스테이지 클리어마다**: 스킬 강화 요소 택 1~2
-  - 기본 / 강공 / 택한 스킬을 강화 (예: 스테미나 감소, 시전속도, 쿨타임, 공격력 등)
-
-### 1-3. 상점
-
-- **체력 회복 아이템 (소모품)**
-  - 체력 물약 +1 (다크소울처럼 웨이브 클리어 시 개수 충전)
-- **유물** (종류는 추후 결정)
-
-### 1-4. 몬스터 (3종, 기본 에셋 돌려쓰기)
-
-| 종류 | 특징 |
-|---|---|
-| 기본 몬스터 | 근거리 공격 |
-| 강화 몬스터 | 체력/공격력 높음, 대신 공격모션 딜레이 존재 |
-| 원거리 몬스터 | 일정 범위 내 플레이어 존재 시 탄환 발사 (탄환 종류 미정) |
-
-- **드랍 아이템**: 바로 플레이어에게 전달 — 경험치 / 골드
-
-### 1-5. 보스 (마지막 스테이지)
-
-- 기본적으로 플레이어를 쫓아다님
-- 기본공격 범위 안이면 기본공격
-- 일정 시간 이상 거리가 안 좁혀지면 → **즉사 돌진** OR **스턴 원거리 공격**
-- 맵에 **랜덤 폭탄** (미정)
-
-### 1-6. 맵
-
-- **단일 맵**에서 모든 진행
-- 스테이지 클리어 시 등장: **상점 / 포탈 / 저장 오브젝트**
-
-### 1-7. 세이브 시스템
-
-- 스테이지 단계
-- 스킬 강화 상태
-- 스테이터스(스텟) 상태
+* Black Desert-style action hack-and-slash
+* Single-map wave clear structure
+* 5~10 stages + final boss
 
 ---
 
-## 2. 주차별 로드맵
+## Core Combat
 
-### 1주차
-- 캐릭터 기본공격 (좌클/우클)
-- 경험치, 스텟 강화
-- 보스 (쫓아오게만) 기본공격
-- 기본 몬스터 (경험치)
-- 맵 제작
-- UI (레벨업 시 스텟 강화) 기본 구성
-- **5웨이브 구성**
+### Inputs
 
-### 2주차
-- 캐릭터 스킬 3종, 스킬 선택
-- 웨이브 클리어 시 스킬 강화
-- 보스 스킬
-- 몬스터 나머지 2종 제작
-- **최대 10웨이브 구성**
-- 상점 구현
+* LMB: 3-hit basic combo
 
-### 3주차
-- 미구현 요소 마무리
-- 밸런싱 및 버그 픽스
-- 플레이 개선
+  * restores stamina
+* RMB: heavy combo
 
----
+  * consumes stamina
+  * no cooldown
+* Space: dodge roll
 
-## 3. 포트폴리오 어필 요소
+  * i-frame
+  * stamina cost
+  * short cooldown (0.3~0.5s)
 
-- **캐릭터 전투 시스템** — 키 클릭/커맨드 기반 입력 시스템 설계 (InputSystem)
-- **레벨업 시 나오는 스킬 / 캐릭터 경험치통 / 골드통 / 몬스터 드랍 경험치·골드** — ScriptableObject 기반 관리
-- **몬스터 / 보스 AI** — 상태머신 또는 조건부 행동 우선순위
-- **플레이어 정보 표시** (스탯, 고른 스킬, 스킬 강화 상태, 유물) — Dictionary
-- **콤보 입력, 스테이지 등** — List 관리
-- **세이브 시스템**
+### Planned Skills
+
+* Q: guard/counter explosion
+* Shift+Q: slam + knockdown
+* Shift+LMB: spinning attack drain-type
+
+### Combat Design
+
+* InputSystem-based command input
+* combo input buffer
+* stamina resource loop:
+
+  * basic atk restores
+  * heavy/dodge/skills consume
+* state machine based player controller
 
 ---
 
-## 4. 현재 상태 (씬/에셋 기준)
+## Progression
 
-- Unity URP (모바일/PC 렌더러 양쪽 설정됨)
-- 새 InputSystem 사용 (`Assets/InputSystem_Actions.inputactions`)
-- 씬: `SampleScene.unity`, `CharacterTestScene.unity` — 캐릭터 테스트 단계
-- Imported: `Suriyun/UnityChanToonShaderVer2` (URP 2.2.3)
+### Stage Clear Rewards
 
+* stat upgrades
+* skill selection/upgrades
+* shop access
+
+### Stats
+
+* Strength
+* Agility
+* Vitality
+* Stamina
+
+### Skill Upgrade Examples
+
+* stamina reduction
+* cooldown reduction
+* attack power
+* cast speed
+* i-frame increase
+
+---
+
+## Monsters
+
+### Types
+
+1. melee
+2. elite/enhanced
+3. ranged projectile
+
+### AI
+
+* FSM based
+* states:
+
+  * Idle
+  * Chase
+  * Attack
+  * Damaged
+  * Dead
+
+### MonsterData SO
+
+Contains:
+
+* HP
+* attack
+* move speed
+* detect range
+* attack range
+* cooldown
+* stagger duration
+
+---
+
+## Boss
+
+* chase player
+* melee attack in range
+* special pattern if distance maintained
+
+  * instant charge OR ranged stun
+* possible random bombs later
+
+---
+
+## Current Implemented
+
+### Player
+
+* movement
+* basic combo
+* heavy attack
+* dodge
+* stamina
+
+### Combat System
+
+* sword hit detection:
+
+  * BoxCollider trigger
+  * animation event toggle:
+
+    * EnableHitbox
+    * DisableHitbox
+  * HashSet prevents multi-hit per swing
+
+### Damage
+
+* formula:
+
+  * damage = Strength × multiplier
+* AttackType enum + Dictionary mapping
+* AttackTypeBehaviour(StateMachineBehaviour)
+  syncs attack state with damage type
+
+---
+
+## Tech Goals
+
+* InputSystem command inputs
+* ScriptableObject data-driven setup
+* FSM AI
+* Dictionary/List usage
+* save system
+
+---
+
+## Save Data
+
+* stage progress
+* skill upgrades
+* player stats
+
+---
+
+## Structure / Philosophy
+
+* user writes code directly
+* Claude only:
+
+  * architecture
+  * debugging
+  * review
+* minimize file reading/token usage
+
+---
+
+## Roadmap
+
+### Week 1
+
+* core combat
+* exp/stats
+* basic monsters
+* boss chase/basic atk
+* UI
+* 5 waves
+
+### Week 2
+
+* 3 skills
+* skill selection/upgrades
+* remaining monsters
+* boss skills
+* shop
+* up to 10 waves
+
+### Week 3
+
+* polish
+* balance
+* bug fixing
+
+---
+
+## Unity/Project Info
+
+* Unity URP
+* new InputSystem
+* scenes:
+
+  * SampleScene
+  * CharacterTestScene
+* imported:
+
+  * UnityChanToonShader URP
