@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class HealthSystem : MonoBehaviour, IDamageable
 {
+    [SerializeField] private int baseHp = 100;
     [SerializeField] private int hpPerVitality = 10;  // 체력 1당 HP 변환 비율
 
     private IStatProvider stats;
@@ -32,8 +33,6 @@ public class HealthSystem : MonoBehaviour, IDamageable
             Debug.Log($"HP: {CurrentHp}/{MaxHp}");
         }
     }
-
-
     private void OnEnable()
     {
         stats.OnStatChanged += RecalculateMaxHp;
@@ -49,7 +48,8 @@ public class HealthSystem : MonoBehaviour, IDamageable
 
     private void RecalculateMaxHp()
     {
-        maxHp = stats.Vitality * hpPerVitality;
+        int bonus = Mathf.Max(0, stats.Vitality - 10) * hpPerVitality;
+        maxHp = baseHp + bonus;
         currentHp = Mathf.Min(currentHp, maxHp);
         OnHpChanged?.Invoke(currentHp, maxHp);
     }

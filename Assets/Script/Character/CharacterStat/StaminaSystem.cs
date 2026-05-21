@@ -3,11 +3,17 @@ using UnityEngine;
 
 public class StaminaSystem : MonoBehaviour
 {
-    [SerializeField] private int staminaPerStaminaStat = 10;
+
 
     private IStatProvider stats;
     private int currentStamina;
     private int maxStamina;
+
+    [SerializeField] private int baseStamina = 100;            // 추가
+    [SerializeField] private int baseRecover = 15;
+    [SerializeField] private int staminaPerStaminaStat = 10;
+    [SerializeField] private int recoverPerStamina = 1;
+    public int RecoverAmount => baseRecover + Mathf.Max(0, stats.Stamina - 10) * recoverPerStamina;
 
     public int CurrentStamina => currentStamina;
     public int MaxStamina => maxStamina;
@@ -44,9 +50,12 @@ public class StaminaSystem : MonoBehaviour
         stats.OnStatChanged -= RecalculateMaxStamina;
     }
 
+    public void RecoverByStat() => Recover(RecoverAmount);
+
     private void RecalculateMaxStamina()
     {
-        maxStamina = stats.Stamina * staminaPerStaminaStat;
+        int bonus = Mathf.Max(0, stats.Stamina - 10) * staminaPerStaminaStat;
+        maxStamina = baseStamina + bonus;
         currentStamina = Mathf.Min(currentStamina, maxStamina);
         OnStaminaChanged?.Invoke(currentStamina, maxStamina);
     }

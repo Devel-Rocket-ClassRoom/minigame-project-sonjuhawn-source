@@ -48,6 +48,9 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private GameObject hitbox;   // 위의 Hitbox 자식 GameObject
     [SerializeField] private SwordHitbox sword;
 
+    [SerializeField] private float baseAnimSpeed = 1f;
+    [SerializeField] private float speedPerAgility = 0.02f;
+
     [SerializeField] private float dodgeDistance = 3f;
     [SerializeField] private float dodgeDuration = 0.3f;
     [SerializeField] private float dodgeCooldown = 0.4f;
@@ -83,6 +86,8 @@ public class PlayerCombat : MonoBehaviour
         input.OnAttack += HandleAttack;
         input.OnHeavyAttack += HandleHeavyAttack;
         input.OnDodge += HandleDodge;
+        stats.OnStatChanged += RecalculateAnimSpeed;   // 추가
+        RecalculateAnimSpeed();
     }
 
     private void OnDisable()
@@ -90,6 +95,7 @@ public class PlayerCombat : MonoBehaviour
         input.OnAttack -= HandleAttack;
         input.OnHeavyAttack -= HandleHeavyAttack;
         input.OnDodge -= HandleDodge;
+        stats.OnStatChanged -= RecalculateAnimSpeed;
     }
 
     private void SetTriggerExclusive(int hash)
@@ -115,7 +121,7 @@ public class PlayerCombat : MonoBehaviour
     public void OnAttackRecover()
     {
         if (stamina != null)
-            stamina.Recover(15);
+            stamina.RecoverByStat();
     }
 
     private void HandleHeavyAttack()
@@ -210,4 +216,10 @@ public class PlayerCombat : MonoBehaviour
     }
     public void EnableHitbox() => hitbox.SetActive(true);
     public void DisableHitbox() => hitbox.SetActive(false);
+
+    private void RecalculateAnimSpeed()
+    {
+        int bonus = Mathf.Max(0, stats.Agility - 10);
+        anim.speed = baseAnimSpeed + bonus * speedPerAgility; ;
+    }
 }
