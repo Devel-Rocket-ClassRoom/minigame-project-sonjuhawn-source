@@ -48,6 +48,12 @@ public class MonsterController : MonoBehaviour
         Current.Tick(this);
     }
 
+    public void SetData(MonsterData d)
+    {
+        data = d;
+        Health.Initialize(data);
+    }
+
     public void ChangeState(IMonsterState next)
     {
         Current?.Exit(this);

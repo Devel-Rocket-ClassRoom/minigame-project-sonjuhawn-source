@@ -170,6 +170,7 @@ Contains:
 * AttackType-scoped anim.speed (currently affects Idle/Move too)
 * Remove dev debug keys (HealthSystem J, StaminaSystem U/I, MonsterSpawnerDebug M)
 * Imported folder anim event ownership (events live in paid asset .anim files)
+* Monster object pooling — defer to polish phase. Profile first; only adopt if Instantiate/Destroy shows up as a hotspot. Use `UnityEngine.Pool.ObjectPool<T>` when introduced.
 
 ---
 
@@ -200,6 +201,7 @@ Contains:
   * debugging
   * review
 * minimize file reading/token usage
+* code delivery: skeleton only (class shell + signatures + TODO comments). No full implementation unless asked.
 
 ---
 
