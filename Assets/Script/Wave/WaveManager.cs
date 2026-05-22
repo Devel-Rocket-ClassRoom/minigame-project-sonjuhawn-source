@@ -17,6 +17,8 @@ public class WaveManager : MonoBehaviour
     [SerializeField] WaveData[] waves;
     [SerializeField] GameObject monsterPrefab;
     [SerializeField] SpawnPoint[] spawnPoints;
+    [SerializeField] private GameObject Panelroot;
+    [SerializeField] private HealthSystem playerHealth;
 
     public int CurrentWaveIndex { get; private set; } = -1;
     public int AliveCount { get; private set; }
@@ -28,6 +30,18 @@ public class WaveManager : MonoBehaviour
     public event Action<int> OnAliveCountChanged;
     public event Action OnAllWavesCleared;
 
+    private void OnEnable()
+    {
+        playerHealth.OnDeath += HandlePlayerDeath;
+        DeadEndBehaviour.OnDeadAnimFinished += ShowRestartUI;
+    }
+
+    private void OnDisable()
+    {
+        playerHealth.OnDeath -= HandlePlayerDeath;
+        DeadEndBehaviour.OnDeadAnimFinished -= ShowRestartUI;
+    }
+
     private void Start()
     {
         if (spawnPoints == null || spawnPoints.Length == 0)
@@ -38,7 +52,7 @@ public class WaveManager : MonoBehaviour
 
     private void SpawnOne(MonsterData data, Transform at)
     {
-        var monster= Instantiate(monsterPrefab, at.position, at.rotation);
+        var monster = Instantiate(monsterPrefab, at.position, at.rotation);
         monster.GetComponent<MonsterController>().SetData(data);
         var health = monster.GetComponent<MonsterHealth>();
         AliveCount++;
@@ -54,12 +68,26 @@ public class WaveManager : MonoBehaviour
         health.OnDeath += onDeath;
     }
 
+    private void HandlePlayerDeath()
+    {
+        StopAllCoroutines();
+        Cursor.lockState = CursorLockMode.None;
+        foreach (var m in FindObjectsByType<MonsterController>(FindObjectsSortMode.None))
+            m.ChangeState(new MonsterIdleState());
+    }
+
+    private void ShowRestartUI()
+    {
+        Cursor.visible = true;
+        Panelroot.SetActive(true);
+    }
+
     private IEnumerator RunSingleWave(WaveData wave)
     {
         State = WaveState.Preparing;
         yield return new WaitForSeconds(wave.waveDelay);
 
-        if(spawnPoints == null || spawnPoints.Length == 0)
+        if (spawnPoints == null || spawnPoints.Length == 0)
         {
             Debug.LogError("No spawn points!");
             yield break;
@@ -83,7 +111,7 @@ public class WaveManager : MonoBehaviour
         }
 
         State = WaveState.InProgress;
-        while(AliveCount > 0)
+        while (AliveCount > 0)
         {
             yield return null;
         }
