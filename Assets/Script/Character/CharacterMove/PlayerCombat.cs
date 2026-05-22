@@ -133,6 +133,7 @@ public class PlayerCombat : MonoBehaviour
     {
         if (state.CurrentState == PlayerState.Dodging ||
         state.CurrentState == PlayerState.Damaged ||
+        state.CurrentState == PlayerState.HeavyAttacking ||
         state.CurrentState == PlayerState.Dead)
             return;
 
@@ -199,8 +200,6 @@ public class PlayerCombat : MonoBehaviour
     {
         float elapsed = 0f;
         Vector3 velocity = direction * (dodgeDistance / dodgeDuration);
-        Debug.Log($"dir={direction}, dist={dodgeDistance}, dur={dodgeDuration}, vel={velocity}");
-
 
         while (elapsed < dodgeDuration)
         {
