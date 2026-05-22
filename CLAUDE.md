@@ -124,7 +124,7 @@ Missing:
 
 ## Roadmap
 W1: core combat + exp + monsters + boss + 5 waves  
-W2: skills + shop + boss patterns + 10 waves  
+W2: skills + shop + boss patterns + 10 waves + NavMesh (optional)  
 W3: polish + balance + bugfix
 
 ---
@@ -133,6 +133,7 @@ W3: polish + balance + bugfix
 - architecture/debug only
 - skeleton code preferred
 - no full rewrites
+- response: minimal tokens, no padding, no summary, answer first
 
 ---
 

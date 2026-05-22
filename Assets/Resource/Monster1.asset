@@ -15,7 +15,7 @@ MonoBehaviour:
   id: turnipa
   displayName: "\uC21C\uBB34"
   maxHp: 30
-  attackPower: 10
+  attackPower: 3
   moveSpeed: 2
   detectRange: 8
   attackRange: 1
