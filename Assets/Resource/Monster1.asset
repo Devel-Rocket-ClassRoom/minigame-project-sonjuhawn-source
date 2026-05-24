@@ -17,9 +17,11 @@ MonoBehaviour:
   maxHp: 30
   attackPower: 3
   moveSpeed: 2
-  detectRange: 8
+  detectRange: 20
   attackRange: 1
   attackCooldown: 2
   expReward: 10
   goldReward: 5
   staggerDuration: 0.4
+  telegraphTime: 0
+  heavyAttackPower: 0

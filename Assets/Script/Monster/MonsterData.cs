@@ -28,6 +28,7 @@ public class MonsterData : ScriptableObject
 
     [Header("Telegraph Attack (Optional)")]
     public float telegraphTime = 0f;   
-    public int heavyAttackPower = 0; 
+    public int heavyAttackPower = 0;
+    public float heavyRecoveryTime = 1.5f;
 
 }
