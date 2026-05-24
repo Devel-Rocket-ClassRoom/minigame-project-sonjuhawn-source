@@ -14,7 +14,7 @@ public class MonsterChaseState : IMonsterState
         if (distance > ctx.Data.detectRange)
             ctx.ChangeState(new MonsterIdleState());
         else if (distance <= ctx.Data.attackRange)
-            ctx.ChangeState(new MonsterAttackState());
+            ctx.ChangeState(ctx.CreateAttackState());   // 기존: new MonsterAttackState()
         else
             ctx.ChasePlayer();
 

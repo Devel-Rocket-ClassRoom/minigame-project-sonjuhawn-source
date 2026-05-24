@@ -9,7 +9,11 @@ public class MonsterController : MonoBehaviour
     public static readonly int MoveHash = Animator.StringToHash("Move");
     public static readonly int AttackHash = Animator.StringToHash("Attack");
     public static readonly int DamageHash = Animator.StringToHash("Damage");
+    public static readonly int ChargeHash = Animator.StringToHash("Charge");
+    public static readonly int HeavyHash = Animator.StringToHash("HeavyAttack");
+    public static readonly int CancelHash = Animator.StringToHash("CancelCharge");
     public static readonly int DieHash = Animator.StringToHash("Die");
+
 
     public MonsterData Data => data;
     public Animator Anim { get; private set; }
@@ -62,6 +66,7 @@ public class MonsterController : MonoBehaviour
     }
     public void FacePlayer()
     {
+        if (Target == null) return;
         Vector3 direction = (Target.position - transform.position);
         direction.y = 0;
         if (direction.sqrMagnitude > 0.01f)
@@ -70,6 +75,7 @@ public class MonsterController : MonoBehaviour
 
     public void ChasePlayer()
     {
+        if (Target == null) return;
         Vector3 direction = (Target.position - transform.position);
         direction.y = 0;
         direction = direction.normalized;
@@ -92,6 +98,17 @@ public class MonsterController : MonoBehaviour
         }
     }
 
+    public void OnHeavyAttackHit()
+    {
+        if (Health.IsDead || Target == null) return;
+        float distance = Vector3.Distance(transform.position, Target.position);
+        if (distance <= data.attackRange + 0.5f)
+        {
+            int dmg = data.heavyAttackPower > 0 ? data.heavyAttackPower : data.attackPower;
+            Target.GetComponent<HealthSystem>()?.TakeDamage(dmg);
+        }
+    }
+
     public void PlayHitReaction()
     {
         if (Health.IsDead) return;
@@ -105,11 +122,16 @@ public class MonsterController : MonoBehaviour
 
     private void HandleDeath()
     {
-        if (Target.TryGetComponent<ExperienceSystem>(out var exp))
+        if (Target != null && Target.TryGetComponent<ExperienceSystem>(out var exp))
         {
             exp.AddExp(data.expReward);   // ← 이 줄이 빠짐
             Debug.Log($"[Exp] +{data.expReward} → Lv{exp.CurrentLevel}, {exp.CurrentExp}/{exp.ExpToNext}, points={exp.PendingPoints}");
         }
         ChangeState(new MonsterDeadState());
     }
+
+    public IMonsterState CreateAttackState()
+    => data.telegraphTime > 0f
+        ? (IMonsterState)new MonsterTelegraphAttackState()
+        : new MonsterAttackState();
 }
