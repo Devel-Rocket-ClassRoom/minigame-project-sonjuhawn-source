@@ -26,4 +26,8 @@ public class MonsterData : ScriptableObject
     [Header("Stagger")]
     public float staggerDuration = 0.4f;
 
+    [Header("Telegraph Attack (Optional)")]
+    public float telegraphTime = 0f;   
+    public int heavyAttackPower = 0; 
+
 }

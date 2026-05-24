@@ -92,6 +92,17 @@ public class MonsterController : MonoBehaviour
         }
     }
 
+    public void OnHeavyAttackHit()
+    {
+        if (Health.IsDead || Target == null) return;
+        float distance = Vector3.Distance(transform.position, Target.position);
+        if (distance <= data.attackRange + 0.5f)
+        {
+            int dmg = data.heavyAttackPower > 0 ? data.heavyAttackPower : data.attackPower;
+            Target.GetComponent<HealthSystem>()?.TakeDamage(dmg);
+        }
+    }
+
     public void PlayHitReaction()
     {
         if (Health.IsDead) return;
@@ -112,4 +123,9 @@ public class MonsterController : MonoBehaviour
         }
         ChangeState(new MonsterDeadState());
     }
+
+    public IMonsterState CreateAttackState()
+    => data.telegraphTime > 0f
+        ? (IMonsterState)new MonsterTelegraphAttackState()
+        : new MonsterAttackState();
 }
