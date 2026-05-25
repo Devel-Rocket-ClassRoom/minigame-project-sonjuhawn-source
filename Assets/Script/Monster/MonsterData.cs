@@ -31,4 +31,12 @@ public class MonsterData : ScriptableObject
     public int heavyAttackPower = 0;
     public float heavyRecoveryTime = 1.5f;
 
+    [Header("Ranged (Optional)")]
+    public GameObject projectilePrefab;
+    public float projectileSpeed = 10f;
+    public float rangedAttackRange = 8f;
+    public float rangedRecoveryTime = 1.2f;
+    public Vector3 muzzleLocalOffset = new Vector3(0, 1f, 0.5f);
+    public float kiteDistance = 4f;   // 이 거리보다 가까우면 도망
+
 }
