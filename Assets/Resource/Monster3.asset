@@ -10,23 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c14734874cd07a048b2f774fedd16233, type: 3}
-  m_Name: Monster2
+  m_Name: Monster3
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
-  id: Devil_Tree_Wither
-  displayName: "\uB098\uBB34"
-  maxHp: 80
-  attackPower: 20
-  moveSpeed: 1.5
-  detectRange: 20
-  attackRange: 2
-  attackCooldown: 5
-  expReward: 30
-  goldReward: 20
-  staggerDuration: 0
-  telegraphTime: 2
-  heavyAttackPower: 20
+  id: Beez_Honey
+  displayName: "\uBC8C"
+  maxHp: 15
+  attackPower: 6
+  moveSpeed: 2.2
+  detectRange: 10
+  attackRange: 1.5
+  attackCooldown: 2
+  expReward: 10
+  goldReward: 5
+  staggerDuration: 1
+  telegraphTime: 0
+  heavyAttackPower: 0
   heavyRecoveryTime: 1.5
-  projectilePrefab: {fileID: 0}
+  projectilePrefab: {fileID: 3209590520731217740, guid: e5e8a476aa954334fb71e63e7df880cd, type: 3}
   projectileSpeed: 10
   rangedAttackRange: 8
-  muzzleOffset: {fileID: 0}
+  rangedRecoveryTime: 1.5
+  muzzleLocalOffset: {x: 0, y: 0.7, z: 0.5}

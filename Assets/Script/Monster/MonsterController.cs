@@ -12,6 +12,7 @@ public class MonsterController : MonoBehaviour
     public static readonly int ChargeHash = Animator.StringToHash("Charge");
     public static readonly int HeavyHash = Animator.StringToHash("HeavyAttack");
     public static readonly int CancelHash = Animator.StringToHash("CancelCharge");
+    public static readonly int RangedHash = Animator.StringToHash("RangedAttack");
     public static readonly int DieHash = Animator.StringToHash("Die");
 
 
@@ -108,6 +109,28 @@ public class MonsterController : MonoBehaviour
             Target.GetComponent<HealthSystem>()?.TakeDamage(dmg);
         }
     }
+    public void OnRangedAttackFire()
+    {
+        if (Health.IsDead || Target == null || Data.projectilePrefab == null) return;
+
+        Vector3 spawnPos = transform.TransformPoint(Data.muzzleLocalOffset);
+        Vector3 dir = (Target.position + Vector3.up * 1f - spawnPos).normalized;  // 살짝 위로 조준 (플레이어 가슴쯤)
+
+        var proj = Instantiate(Data.projectilePrefab, spawnPos, Quaternion.identity);
+        var mp = proj.GetComponent<MonsterProjectile>();
+        if (mp != null)
+            mp.Init(Data.attackPower, Data.projectileSpeed, dir);
+    }
+    public void Retreat()
+    {
+        if (Target == null) return;
+        Vector3 direction = (transform.position - Target.position);
+        direction.y = 0;
+        direction = direction.normalized;
+
+        transform.position += direction * Data.moveSpeed * Time.deltaTime;
+        Anim.SetFloat(MoveHash, 1);   // 또는 별도 BackStep 트리거
+    }
 
     public void PlayHitReaction()
     {
@@ -131,7 +154,11 @@ public class MonsterController : MonoBehaviour
     }
 
     public IMonsterState CreateAttackState()
-    => data.telegraphTime > 0f
-        ? (IMonsterState)new MonsterTelegraphAttackState()
-        : new MonsterAttackState();
+    {
+        if (Data.projectilePrefab != null)
+            return new MonsterRangedAttackState();
+        if (Data.telegraphTime > 0f)
+            return new MonsterTelegraphAttackState();
+        return new MonsterAttackState();
+    }
 }
