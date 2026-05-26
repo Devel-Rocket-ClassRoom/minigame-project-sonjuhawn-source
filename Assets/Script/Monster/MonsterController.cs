@@ -147,8 +147,13 @@ public class MonsterController : MonoBehaviour
     {
         if (Target != null && Target.TryGetComponent<ExperienceSystem>(out var exp))
         {
-            exp.AddExp(data.expReward);   // ← 이 줄이 빠짐
+            exp.AddExp(data.expReward);  
             Debug.Log($"[Exp] +{data.expReward} → Lv{exp.CurrentLevel}, {exp.CurrentExp}/{exp.ExpToNext}, points={exp.PendingPoints}");
+        }
+        if (Target != null && Target.TryGetComponent<GoldSystem>(out var gold))
+        {
+            gold.AddGold(data.goldReward); 
+            Debug.Log($"[Gold] +{data.goldReward} → Gold{gold.CurrentGold}");
         }
         ChangeState(new MonsterDeadState());
     }

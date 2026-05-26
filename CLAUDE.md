@@ -131,7 +131,8 @@ W3: polish + balance + bugfix
 
 ## Claude Rule
 - architecture/debug only
-- skeleton code preferred
+- no file creation — show skeleton code in chat, user types it in
+- guide step-by-step: explain structure → show skeleton → advise on what to fill in
 - no full rewrites
 - response: minimal tokens, no padding, no summary, answer first
 
