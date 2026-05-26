@@ -65,4 +65,14 @@ public class HealthSystem : MonoBehaviour, IDamageable
         if (currentHp == 0)
             OnDeath?.Invoke();
     }
+    public void Heal(int amount)
+    {
+        if(IsDead)
+            return;
+        currentHp = Mathf.Min(currentHp + amount, maxHp);
+        OnHpChanged?.Invoke(currentHp, maxHp);
+        // 사망 중이면 return
+        // currentHp += amount, maxHp 초과 안 되게 Mathf.Min
+        // OnHpChanged 호출
+    }
 }

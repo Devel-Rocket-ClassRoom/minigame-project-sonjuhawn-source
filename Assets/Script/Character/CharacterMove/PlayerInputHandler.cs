@@ -14,7 +14,8 @@ public class PlayerInputHandler : MonoBehaviour
     public event Action OnAttack;
     public event Action OnHeavyAttack;
     public event Action OnDodge;
-    public event Action OnSkill;       // 지금 안 써도 미리 자리만
+    public event Action OnSkill;       
+    public event Action OnPotion;  
 
     private void Awake()
     {
@@ -34,6 +35,8 @@ public class PlayerInputHandler : MonoBehaviour
         _actions.Player.HeavyAttack.performed += HandleHeavyAttack;
         _actions.Player.Dodge.performed += HandleDodge;
         _actions.Player.Skill.performed += HandleSkill;
+        _actions.Player.Potion.performed += HandlePotion; 
+
     }
 
     private void OnDisable()
@@ -42,6 +45,7 @@ public class PlayerInputHandler : MonoBehaviour
         _actions.Player.HeavyAttack.performed -= HandleHeavyAttack;
         _actions.Player.Dodge.performed -= HandleDodge;
         _actions.Player.Skill.performed -= HandleSkill;
+        _actions.Player.Potion.performed -= HandlePotion;
 
         _actions.Player.Disable();
     }
@@ -57,4 +61,6 @@ public class PlayerInputHandler : MonoBehaviour
     private void HandleHeavyAttack(InputAction.CallbackContext _) => OnHeavyAttack?.Invoke();
     private void HandleDodge(InputAction.CallbackContext _) => OnDodge?.Invoke();
     private void HandleSkill(InputAction.CallbackContext _) => OnSkill?.Invoke();
+    private void HandlePotion(InputAction.CallbackContext _) => OnPotion?.Invoke();
+
 }
