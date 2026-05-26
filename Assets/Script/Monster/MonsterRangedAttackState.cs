@@ -3,14 +3,12 @@ using UnityEngine;
 public class MonsterRangedAttackState : IMonsterState
 {
     private float endTime;
-    private bool fired;
 
     public void Enter(MonsterController ctx)
     {
         ctx.FacePlayer();
         ctx.Anim.SetTrigger(MonsterController.RangedHash);
         endTime = Time.time + ctx.Data.rangedRecoveryTime;
-        fired = false;
     }
 
     public void Tick(MonsterController ctx)
