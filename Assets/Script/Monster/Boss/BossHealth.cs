@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
 
-public class MonsterHealth : MonoBehaviour, IDamageable
+public class BossHealth : MonoBehaviour, IDamageable
 {
-    [SerializeField] private MonsterData data;
+    [SerializeField] private BossData data;
 
     private int currentHp;
 
@@ -17,7 +17,7 @@ public class MonsterHealth : MonoBehaviour, IDamageable
 
     private void Awake()
     {
-        if (data != null) currentHp = data.maxHp;
+        currentHp = MaxHp;
     }
 
     public void TakeDamage(int amount)
@@ -32,12 +32,5 @@ public class MonsterHealth : MonoBehaviour, IDamageable
             OnDeath?.Invoke();
         else
             OnDamaged?.Invoke();
-    }
-
-    public void Initialize(MonsterData d)
-    {
-        data = d;
-        currentHp = d.maxHp;
-        OnHpChanged?.Invoke(currentHp, MaxHp);
     }
 }
