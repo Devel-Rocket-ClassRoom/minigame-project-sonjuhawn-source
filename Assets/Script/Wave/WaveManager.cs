@@ -52,7 +52,8 @@ public class WaveManager : MonoBehaviour
 
     private void SpawnOne(MonsterData data, Transform at)
     {
-        var monster = Instantiate(monsterPrefab, at.position, at.rotation);
+        GameObject prefab = data.prefabOverride != null ? data.prefabOverride : monsterPrefab;
+        var monster = Instantiate(prefab, at.position, at.rotation);
         monster.GetComponent<MonsterController>().SetData(data);
         var health = monster.GetComponent<MonsterHealth>();
         AliveCount++;

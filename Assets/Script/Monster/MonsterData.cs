@@ -7,6 +7,9 @@ public class MonsterData : ScriptableObject
     public string id = "turnipa";
     public string displayName = "순무";
 
+    [Header("Prefab")]
+    public GameObject prefabOverride;   // null이면 WaveManager의 공용 prefab 사용
+
     [Header("Combat")]
     public int maxHp = 30;
     public int attackPower = 10;
