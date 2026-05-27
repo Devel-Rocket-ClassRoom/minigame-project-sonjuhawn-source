@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   id: Beez_Honey
   displayName: "\uBC8C"
+  prefabOverride: {fileID: 2531899109815802360, guid: 188d8c45cb3d9d044be0bca25afcfb5d, type: 3}
   maxHp: 15
   attackPower: 6
   moveSpeed: 2.2
@@ -31,3 +32,4 @@ MonoBehaviour:
   rangedAttackRange: 8
   rangedRecoveryTime: 1.5
   muzzleLocalOffset: {x: 0, y: 0.7, z: 0.5}
+  kiteDistance: 4
