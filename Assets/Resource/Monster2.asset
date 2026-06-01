@@ -28,8 +28,8 @@ MonoBehaviour:
   heavyAttackPower: 20
   heavyRecoveryTime: 1.5
   projectilePrefab: {fileID: 0}
-  projectileSpeed: 10
-  rangedAttackRange: 8
-  rangedRecoveryTime: 1.2
-  muzzleLocalOffset: {x: 0, y: 1, z: 0.5}
-  kiteDistance: 4
+  projectileSpeed: 0
+  rangedAttackRange: 0
+  rangedRecoveryTime: 0
+  muzzleLocalOffset: {x: 0, y: 0, z: 0}
+  kiteDistance: 0

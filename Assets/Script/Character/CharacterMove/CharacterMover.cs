@@ -37,6 +37,9 @@ public class CharacterMover : MonoBehaviour
 
     private void Update()
     {
+        if (!CanMove())
+            return;
+        Debug.Log(CanMove());
         Vector2 moveInput = input.MoveInput;
         Vector3 camForward = Vector3.ProjectOnPlane(cam.transform.forward, Vector3.up).normalized;
         Vector3 camRight = Vector3.ProjectOnPlane(cam.transform.right, Vector3.up).normalized;
@@ -59,7 +62,6 @@ public class CharacterMover : MonoBehaviour
 
     bool CanMove()
     {
-
         return state.IsState(PlayerState.Idle) ||
                state.IsState(PlayerState.Moving);
     }
