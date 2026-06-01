@@ -24,6 +24,7 @@ public class BossController : MonoBehaviour
 
         bb.onAttackFired = () => StartCoroutine(AttackCooldown());
         bb.onChargeFired = () => StartCoroutine(ChargeCooldown());
+        bb.onRangedFired = () => StartCoroutine(RangedCooldown());
 
         // BT 트리 조립
         root = new BTSelector(new List<BTNode>
@@ -32,12 +33,13 @@ public class BossController : MonoBehaviour
             new ContinueTelegraphAction(),
             new BTSequence(new List<BTNode>
             {
-                new CheckDistance(data.attackRange),
+                new CheckDistance(data.rangedRange),
                 new DecidePatternAction(),
                 new BTSelector(new List<BTNode>
                 {
                     new MeleeAttackAction(),
-                    new ChargeAction()
+                    new ChargeAction(),
+                    new RangedAttackAction()
                 })
             }),
             new ChaseAction()
@@ -101,6 +103,13 @@ public class BossController : MonoBehaviour
         yield return new WaitForSeconds(data.chargeCooldown);
         bb.isChargeCooldown = false;
     }
+
+    private IEnumerator RangedCooldown()
+    {
+        yield return new WaitForSeconds(data.rangedCooldown);
+        bb.isRangedCooldown = false;
+    }
+
 
     private void OnDestroy()
     {

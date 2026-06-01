@@ -16,4 +16,6 @@ public class WaveData : ScriptableObject
     [Min(0)] public float waveDelay = 2f;
     [Min(0)] public float spawnDuration = 1f;
 
+    [Header("Boss")]
+    public GameObject bossPrefabOverride; 
 }

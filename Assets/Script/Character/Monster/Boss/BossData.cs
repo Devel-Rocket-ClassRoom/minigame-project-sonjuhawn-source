@@ -21,6 +21,13 @@ public class BossData : ScriptableObject
     public float chargeDuration = 0.8f;
     public float chargeCooldown = 3f;
 
+    [Header("원거리")]
+    public float rangedRange = 12f;
+    public float rangedCooldown = 3f;
+    public float rangedSpeed = 10f;
+    public Vector3 offset;
+    public GameObject projectilePrefab;
+
     [Header("보상")]
     public int expReward = 200;
     public int goldReward = 100;

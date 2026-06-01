@@ -132,6 +132,11 @@ public class WaveManager : MonoBehaviour
             CurrentWaveIndex = i;
             yield return RunSingleWave(waves[i]);
 
+            if (waves[i].bossPrefabOverride != null)
+            {
+                yield return RunBossWave(waves[i].bossPrefabOverride);
+            }
+
             if (i < waves.Length - 1)
             {
                 State = WaveState.Rest;
@@ -142,6 +147,20 @@ public class WaveManager : MonoBehaviour
 
         State = WaveState.AllCleared;
         OnAllWavesCleared?.Invoke();
+    }
+
+    private IEnumerator RunBossWave(GameObject bossPrefab)
+    {
+        State = WaveState.InProgress;
+        var boss = Instantiate(bossPrefab, spawnPoints[0].transform.position, Quaternion.identity);
+        var bossanim = boss.GetComponent<Animator>();
+        bossanim.SetTrigger("Appear");
+        var bossHealth = boss.GetComponent<BossHealth>();
+
+        bool bossDead = false;
+        bossHealth.OnDeath += () => bossDead = true;
+
+        yield return new WaitUntil(() => bossDead);
     }
 
     public void EndRest()

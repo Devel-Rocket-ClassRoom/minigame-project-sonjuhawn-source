@@ -1,6 +1,5 @@
 using UnityEngine;
-
-public class DecidePatternAction : BTNode
+public class RangedAttackAction : BTNode
 {
     public override NodeState Execute(BossBlackboard bb)
     {
@@ -8,11 +7,12 @@ public class DecidePatternAction : BTNode
 
         float distance = Vector3.Distance(bb.self.position, bb.target.position);
 
-        // 차징 범위 밖이면 차징, 안이면 근접
-        if (distance > bb.data.chargeRange)
+        if (distance > bb.data.chargeRange && !bb.isChargeCooldown)
             bb.nextAttackPattern = 1; // 차징
+        else if (distance > bb.data.attackRange)
+            bb.nextAttackPattern = bb.isRangedCooldown ? 1 : Random.Range(1, 3); // 차징 or 원거리
         else
-            bb.nextAttackPattern = Random.Range(0, 2); // 근접
+            bb.nextAttackPattern = 0; // 근접
 
         return NodeState.Success;
     }
