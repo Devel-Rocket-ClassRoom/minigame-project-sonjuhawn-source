@@ -35,14 +35,4 @@ public class PlayerStats : MonoBehaviour, IStatProvider
         }
         OnStatChanged?.Invoke();
     }
-
-    // === 모든 스탯 동시 강화 (1주차 MVP 자동 분배) ===
-    public void GrowAll(int amount = 1)
-    {
-        strength += amount;
-        agility += amount;
-        vitality += amount;
-        stamina += amount;
-        OnStatChanged?.Invoke();
-    }
 }

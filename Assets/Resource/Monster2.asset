@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   id: Devil_Tree_Wither
   displayName: "\uB098\uBB34"
+  prefabOverride: {fileID: 8474194316745816215, guid: d691e7f2cad0da6419c086cc49d67a06, type: 3}
   maxHp: 80
   attackPower: 20
   moveSpeed: 1.5
@@ -27,6 +28,8 @@ MonoBehaviour:
   heavyAttackPower: 20
   heavyRecoveryTime: 1.5
   projectilePrefab: {fileID: 0}
-  projectileSpeed: 10
-  rangedAttackRange: 8
-  muzzleOffset: {fileID: 0}
+  projectileSpeed: 0
+  rangedAttackRange: 0
+  rangedRecoveryTime: 0
+  muzzleLocalOffset: {x: 0, y: 0, z: 0}
+  kiteDistance: 0

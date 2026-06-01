@@ -14,20 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   id: Beez_Honey
   displayName: "\uBC8C"
+  prefabOverride: {fileID: 2531899109815802360, guid: 188d8c45cb3d9d044be0bca25afcfb5d, type: 3}
   maxHp: 15
   attackPower: 6
-  moveSpeed: 2.2
+  moveSpeed: 2
   detectRange: 10
   attackRange: 1.5
   attackCooldown: 2
-  expReward: 10
+  expReward: 15
   goldReward: 5
   staggerDuration: 1
   telegraphTime: 0
   heavyAttackPower: 0
-  heavyRecoveryTime: 1.5
+  heavyRecoveryTime: 0
   projectilePrefab: {fileID: 3209590520731217740, guid: e5e8a476aa954334fb71e63e7df880cd, type: 3}
-  projectileSpeed: 10
+  projectileSpeed: 5
   rangedAttackRange: 8
-  rangedRecoveryTime: 1.5
+  rangedRecoveryTime: 3
   muzzleLocalOffset: {x: 0, y: 0.7, z: 0.5}
+  kiteDistance: 3

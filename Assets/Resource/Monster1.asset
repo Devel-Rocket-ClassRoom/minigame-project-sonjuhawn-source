@@ -14,13 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   id: turnipa
   displayName: "\uC21C\uBB34"
+  prefabOverride: {fileID: 6194577820417657568, guid: 55059b21f3f5525429a6868eb8e0f400, type: 3}
   maxHp: 30
   attackPower: 3
   moveSpeed: 2
   detectRange: 20
   attackRange: 1
   attackCooldown: 2
-  expReward: 10
+  expReward: 20
   goldReward: 5
   staggerDuration: 0.4
   telegraphTime: 0

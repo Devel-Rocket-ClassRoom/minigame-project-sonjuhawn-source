@@ -25,8 +25,6 @@ public class ExperienceSystem : MonoBehaviour
     {
         stats = GetComponent<PlayerStats>();
     }
-
-    // === 4단계에서 구현할 메서드들 (지금은 비워두기) ===
     public void AddExp(int amount) 
     {
         if (amount <= 0)
@@ -54,6 +52,6 @@ public class ExperienceSystem : MonoBehaviour
     }
     private int ExpForLevel(int level) 
     {
-        return 100 + (level -1) * 50;
+        return 50 + (level -1) * 10;
     }
 }

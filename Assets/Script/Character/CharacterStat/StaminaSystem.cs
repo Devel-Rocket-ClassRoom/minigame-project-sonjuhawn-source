@@ -26,16 +26,7 @@ public class StaminaSystem : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            bool ok = TryConsume(20);
-            Debug.Log($"TryConsume(20): {ok}, Stamina: {currentStamina}/{maxStamina}");
-        }
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            Recover(10);
-            Debug.Log($"Recover(10), Stamina: {currentStamina}/{maxStamina}");
-        }
+
     }
     private void OnEnable()
     {

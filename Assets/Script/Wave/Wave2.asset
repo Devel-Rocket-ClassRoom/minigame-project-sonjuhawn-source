@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaveData
   spawnEntries:
   - monster: {fileID: 11400000, guid: 4386f117891049d4796ad3fe6ab30e16, type: 2}
-    count: 7
+    count: 5
+  - monster: {fileID: 11400000, guid: a3dbae0151edde943b6a770fba23873c, type: 2}
+    count: 2
   waveDelay: 2
   spawnDuration: 1
