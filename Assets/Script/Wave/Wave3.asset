@@ -21,3 +21,4 @@ MonoBehaviour:
     count: 1
   waveDelay: 2
   spawnDuration: 0.5
+  bossPrefabOverride: {fileID: 588378081822097733, guid: 9a492c63e5dac22459aa7272db7a1e2b, type: 3}

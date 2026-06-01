@@ -19,18 +19,16 @@ public class MonsterProjectile : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log($"pos={transform.position}");
         transform.position += transform.forward * speed * Time.deltaTime;
         if (Time.time - spawnTime >= lifeTime) Destroy(gameObject);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"Hit: {other.name}, tag={other.tag}");
-
-        if (other.CompareTag("Monster")) return;          // 자기편 무시
+        if (other.CompareTag("Projectile")) return;
+        if (other.CompareTag("Monster")) return;         
         var hp = other.GetComponent<HealthSystem>();
         if (hp != null) hp.TakeDamage(damage);
-        Destroy(gameObject);                               // 벽/플레이어 맞으면 소멸
+        Destroy(gameObject);                              
     }
 }

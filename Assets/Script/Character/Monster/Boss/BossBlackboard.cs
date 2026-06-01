@@ -5,7 +5,7 @@ public class BossBlackboard
     public Transform self;      // 보스 본인
     public Transform target;    // 플레이어
     public Animator anim;
-    public BossData data;       // MonsterData 대신 BossData (나중에 만들 SO)
+    public BossData data;       // BossData 
 
     public int nextAttackPattern;
 
@@ -21,4 +21,7 @@ public class BossBlackboard
 
     public bool isAttackCooldown;   // 공격 쿨다운 중?
     public bool isCharging;         // 차징 중?
+
+    public bool isRangedCooldown;
+    public System.Action onRangedFired;
 }
