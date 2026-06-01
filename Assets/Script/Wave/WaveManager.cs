@@ -9,6 +9,7 @@ public enum WaveState
     Spawning,    // 몬스터들을 풀어놓는 중 (spawnDuration 간격으로)
     InProgress,  // 다 풀어놨고 살아있는 몬스터 처치 대기 중
     Cleared,     // 한 웨이브 클리어 (다음 웨이브로 넘어가기 전 짧은 텀)
+    Rest,        // 휴식 타임
     AllCleared   // 모든 웨이브 끝 → 보스 트리거
 }
 
@@ -19,6 +20,8 @@ public class WaveManager : MonoBehaviour
     [SerializeField] SpawnPoint[] spawnPoints;
     [SerializeField] private GameObject Panelroot;
     [SerializeField] private HealthSystem playerHealth;
+    [SerializeField] private ShopUI shopUI;
+
 
     public int CurrentWaveIndex { get; private set; } = -1;
     public int AliveCount { get; private set; }
@@ -123,14 +126,29 @@ public class WaveManager : MonoBehaviour
 
     private IEnumerator RunWaves()
     {
+
         for (int i = 0; i < waves.Length; i++)
         {
             CurrentWaveIndex = i;
             yield return RunSingleWave(waves[i]);
+
+            // 마지막 웨이브 아니면 Rest
+            if (i < waves.Length - 1)
+            {
+                State = WaveState.Rest;
+                shopUI.Open();
+                yield return new WaitUntil(() => State == WaveState.Preparing);
+            }
         }
 
         State = WaveState.AllCleared;
         OnAllWavesCleared?.Invoke();
+    }
+
+    public void EndRest()
+    {
+        if (State != WaveState.Rest) return;
+        State = WaveState.Preparing;  // WaitUntil 해제 → 다음 웨이브 진행
     }
 
     [ContextMenu("DEBUG: Kill All Monsters")]
