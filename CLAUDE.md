@@ -124,7 +124,8 @@ Features:
 - animation event cleanup
 - 포션 파티클 에셋 적용
 - pooling (optional)
-- 상점 시스템 (AddMaxPotion 연동)
+- 상점 시스템 (AddMaxPotion 연동) ✓
+- 보스 웨이브 스폰: WaveData에 bossPrefabOverride 추가, BossHealth.OnDeath로 alive 추적 (방식 1번)
 
 ---
 

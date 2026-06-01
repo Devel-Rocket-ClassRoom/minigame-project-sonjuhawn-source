@@ -132,7 +132,6 @@ public class WaveManager : MonoBehaviour
             CurrentWaveIndex = i;
             yield return RunSingleWave(waves[i]);
 
-            // 마지막 웨이브 아니면 Rest
             if (i < waves.Length - 1)
             {
                 State = WaveState.Rest;

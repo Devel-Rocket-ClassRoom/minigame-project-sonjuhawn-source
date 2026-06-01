@@ -25,14 +25,7 @@ public class HealthSystem : MonoBehaviour, IDamageable
         state = GetComponent<CharacterStateMachine>();
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            TakeDamage(10);
-            Debug.Log($"HP: {CurrentHp}/{MaxHp}");
-        }
-    }
+
     private void OnEnable()
     {
         stats.OnStatChanged += RecalculateMaxHp;

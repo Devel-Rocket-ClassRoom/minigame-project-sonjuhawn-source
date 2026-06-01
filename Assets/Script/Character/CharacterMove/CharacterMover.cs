@@ -39,7 +39,6 @@ public class CharacterMover : MonoBehaviour
     {
         if (!CanMove())
             return;
-        Debug.Log(CanMove());
         Vector2 moveInput = input.MoveInput;
         Vector3 camForward = Vector3.ProjectOnPlane(cam.transform.forward, Vector3.up).normalized;
         Vector3 camRight = Vector3.ProjectOnPlane(cam.transform.right, Vector3.up).normalized;
