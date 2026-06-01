@@ -8955,6 +8955,19 @@ MonoBehaviour:
   cooldown: 3
   waveManager: {fileID: 1616530446}
   healParticle: {fileID: 0}
+--- !u!114 &1712088852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1712088849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71fad997479ee544e9f4c5dd3d5087d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitEffectHandler
+  hitEffectPrefab: {fileID: 8586431242399979150, guid: 59e37b1c2249e4a4c82753a6022ffe6f, type: 3}
 --- !u!1 &1737504344
 GameObject:
   m_ObjectHideFlags: 0
@@ -10887,6 +10900,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2451848335724726828, guid: 1d9c465c8ea972f4fb3272e740325228, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1712088851}
+    - targetCorrespondingSourceObject: {fileID: 2451848335724726828, guid: 1d9c465c8ea972f4fb3272e740325228, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1712088852}
   m_SourcePrefab: {fileID: 100100000, guid: 1d9c465c8ea972f4fb3272e740325228, type: 3}
 --- !u!1001 &3536316059049888098
 PrefabInstance:

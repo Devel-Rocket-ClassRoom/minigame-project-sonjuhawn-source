@@ -18,6 +18,7 @@ public class HealthSystem : MonoBehaviour, IDamageable
 
     public event Action<int, int> OnHpChanged;  // (current, max) — UI 갱신용
     public event Action OnDeath;
+    public event Action OnDamaged;
 
     private void Awake()
     {
@@ -54,6 +55,7 @@ public class HealthSystem : MonoBehaviour, IDamageable
 
         currentHp = Mathf.Max(currentHp - amount, 0);
         OnHpChanged?.Invoke(currentHp, maxHp);
+        OnDamaged?.Invoke();
 
         if (currentHp == 0)
             OnDeath?.Invoke();
