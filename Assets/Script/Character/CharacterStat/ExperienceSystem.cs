@@ -27,6 +27,7 @@ public class ExperienceSystem : MonoBehaviour
     }
     public void AddExp(int amount) 
     {
+        Debug.Log($"AddExp: {Time.realtimeSinceStartup}");
         if (amount <= 0)
             return;
 

@@ -19,16 +19,21 @@ public class ShopSystem : MonoBehaviour
 
     public void OpenShop()
     {
-        Time.timeScale = 0f;
+        Debug.Log($"ShopOpen: {Time.realtimeSinceStartup}");
+
+        PauseManager.Instance.Pause();
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.Confined;
     }
 
     public void CloseShop()
     {
-        Time.timeScale = 1f;
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        PauseManager.Instance.Resume();
+        if (PauseManager.Instance.PauseCount == 0)
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
     }
 
     public void BuyPotionUpgrade()

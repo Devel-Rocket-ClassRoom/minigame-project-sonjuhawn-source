@@ -33,8 +33,9 @@ public class StatDistributionPanel : MonoBehaviour
 
     private void HandleLevelUp(int newLevel)
     {
+        Debug.Log($"LevelUp: {Time.realtimeSinceStartup}");
         panelRoot.SetActive(true);
-        Time.timeScale = 0;
+        PauseManager.Instance.Pause();
         Cursor.visible = true;                      
         Cursor.lockState = CursorLockMode.None;      
         Refresh();
@@ -48,7 +49,7 @@ public class StatDistributionPanel : MonoBehaviour
 
     public void OnConfirm()
     {
-        Time.timeScale = 1;
+        PauseManager.Instance.Resume();
         Cursor.visible = false;                     
         Cursor.lockState = CursorLockMode.Locked;
         panelRoot.SetActive(false);
