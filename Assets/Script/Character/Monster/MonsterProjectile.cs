@@ -8,6 +8,8 @@ public class MonsterProjectile : MonoBehaviour
     private float lifeTime = 5f;
     private float spawnTime;
 
+    [SerializeField] private GameObject hitEffectPrefab;
+
     public void Init(int dmg, float spd, Vector3 direction)
     {
         damage = dmg;
@@ -26,7 +28,14 @@ public class MonsterProjectile : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Projectile")) return;
-        if (other.CompareTag("Monster")) return;         
+        if (other.CompareTag("Monster")) return;
+
+        if (hitEffectPrefab != null)
+        {
+            var vfx = Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);
+            Destroy(vfx, 2f);
+        }
+
         var hp = other.GetComponent<HealthSystem>();
         if (hp != null) hp.TakeDamage(damage);
         Destroy(gameObject);                              
