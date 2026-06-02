@@ -16,9 +16,9 @@ public class ShopUI : MonoBehaviour
 
     private void Start()
     {
-        potionCostText.text = $"포션 +1 ({shop.PotionUpgradeCost}G)";
-        healCostText.text = $"HP 회복 ({shop.HealCost}G)";
-        statCostText.text = $"스탯 강화 ({shop.StatUpgradeCost}G)";
+        potionCostText.text = $"Potion +1 ({shop.PotionUpgradeCost}G)";
+        healCostText.text = $"HP Regenerate ({shop.HealCost}G)";
+        statCostText.text = $"Stat Up ({shop.StatUpgradeCost}G)";
     }
 
     private void OnEnable()

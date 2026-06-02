@@ -33,7 +33,6 @@ public class StatDistributionPanel : MonoBehaviour
 
     private void HandleLevelUp(int newLevel)
     {
-        Debug.Log($"LevelUp: {Time.realtimeSinceStartup}");
         panelRoot.SetActive(true);
         PauseManager.Instance.Pause();
         Cursor.visible = true;                      

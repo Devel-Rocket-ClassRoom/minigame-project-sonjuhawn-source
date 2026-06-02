@@ -134,6 +134,10 @@ public class WaveManager : MonoBehaviour
 
             if (waves[i].bossPrefabOverride != null)
             {
+                State = WaveState.Rest;
+                shopUI.Open();
+                yield return new WaitUntil(() => State == WaveState.Preparing);
+
                 yield return RunBossWave(waves[i].bossPrefabOverride);
             }
 
