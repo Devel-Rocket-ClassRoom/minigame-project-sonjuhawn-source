@@ -11,6 +11,7 @@ public class CharacterMover : MonoBehaviour
     private IStatProvider stats;
     [SerializeField] private float rotationSpeed = 2000f;
     [SerializeField] private Camera cam;
+    [SerializeField] private AudioClip footstepClip;
 
     private PlayerInputHandler input;
     private CharacterStateMachine state;
@@ -74,5 +75,10 @@ public class CharacterMover : MonoBehaviour
     private void RecalculateSpeed()
     {
         moveSpeed = baseSpeed + Mathf.Max(0, stats.Agility - 10) * speedPerAgility * 0.2f;
+    }
+
+    public void OnFootStep()
+    {
+        AudioManager.Instance.PlaySFX(footstepClip);
     }
 }

@@ -43,12 +43,12 @@ public class PlayerCombat : MonoBehaviour
     private StaminaSystem stamina;
     private Animator anim;
     private Rigidbody rb;
+    private HealthSystem health;
 
     private int leftComboIndex = 0;
 
     [SerializeField] private GameObject hitbox;   // 위의 Hitbox 자식 GameObject
     [SerializeField] private SwordHitbox sword;
-    [SerializeField] private HealthSystem health;
 
     [SerializeField] private float baseAnimSpeed = 1f;
     [SerializeField] private float speedPerAgility = 0.02f;
@@ -68,6 +68,10 @@ public class PlayerCombat : MonoBehaviour
 
     [SerializeField] private List<AttackEntry> attackTable;
     private Dictionary<AttackType, float> multiplierMap;
+
+    [SerializeField] private AudioClip normalCilp;
+    [SerializeField] private AudioClip hardAttackCilp;
+    [SerializeField] private AudioClip finalAttackCilp;
 
     private void Awake()
     {
@@ -235,4 +239,9 @@ public class PlayerCombat : MonoBehaviour
         int bonus = Mathf.Max(0, stats.Agility - 10);
         anim.speed = baseAnimSpeed + bonus * speedPerAgility; ;
     }
+
+    public void OnNormalAttackSound() => AudioManager.Instance.PlaySFX(normalCilp);
+    public void OnHardAttackSound() => AudioManager.Instance.PlaySFX(hardAttackCilp);
+    public void OnFinalAttackSound() => AudioManager.Instance.PlaySFX(finalAttackCilp);
+
 }
