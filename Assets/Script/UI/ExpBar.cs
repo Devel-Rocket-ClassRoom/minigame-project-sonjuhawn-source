@@ -30,6 +30,6 @@ public class ExpBar : MonoBehaviour
 
     private void UpdateLevel(int level)
     {
-        levelLabel.text = $"Lv. {level}";
+        levelLabel.text = $"{level}Lv";
     }
 }

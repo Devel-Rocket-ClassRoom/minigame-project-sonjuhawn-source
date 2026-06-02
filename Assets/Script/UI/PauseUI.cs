@@ -23,7 +23,6 @@ public class PauseUI : MonoBehaviour
         _actions.UI.Disable();
     }
 
-
     private void Pause()
     {
         panel.SetActive(true);

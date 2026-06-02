@@ -50,6 +50,7 @@ public class BossController : MonoBehaviour
     }
     private void Update()
     {
+        if (bb.isAppearing) return;
         bb.anim.SetFloat("Move", 0f);
         root.Execute(bb);
     }
@@ -110,6 +111,10 @@ public class BossController : MonoBehaviour
         bb.isRangedCooldown = false;
     }
 
+    public void OnAppearFinished()
+    {
+        bb.isAppearing = false;
+    }
 
     private void OnDestroy()
     {

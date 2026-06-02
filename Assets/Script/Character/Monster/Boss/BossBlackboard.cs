@@ -6,6 +6,7 @@ public class BossBlackboard
     public Transform target;    // 플레이어
     public Animator anim;
     public BossData data;       // BossData 
+    public bool isAppearing = true;
 
     public int nextAttackPattern;
 
