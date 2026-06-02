@@ -60,6 +60,7 @@ public class HealthSystem : MonoBehaviour, IDamageable
         if (currentHp == 0)
             OnDeath?.Invoke();
     }
+
     public void Heal(int amount)
     {
         if(IsDead)

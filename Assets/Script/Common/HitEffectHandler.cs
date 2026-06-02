@@ -7,6 +7,9 @@ public class HitEffectHandler : MonoBehaviour
     private MonsterHealth monsterHealth;
     private BossHealth bossHealth;
 
+    [SerializeField] private AudioClip hitClip;
+
+
     private void Awake()
     {
         health = GetComponent<HealthSystem>();
@@ -32,5 +35,6 @@ public class HitEffectHandler : MonoBehaviour
     {
         var vfx = Instantiate(hitEffectPrefab, transform.position + Vector3.up * 0.2f, Quaternion.identity);
         Destroy(vfx, 0.5f);
+        if (hitClip != null) AudioManager.Instance.PlaySFX(hitClip);
     }
 }

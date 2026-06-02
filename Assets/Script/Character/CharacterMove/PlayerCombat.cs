@@ -72,6 +72,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private AudioClip normalCilp;
     [SerializeField] private AudioClip hardAttackCilp;
     [SerializeField] private AudioClip finalAttackCilp;
+    [SerializeField] private AudioClip DodgeCilp;
 
     private void Awake()
     {
@@ -243,5 +244,6 @@ public class PlayerCombat : MonoBehaviour
     public void OnNormalAttackSound() => AudioManager.Instance.PlaySFX(normalCilp);
     public void OnHardAttackSound() => AudioManager.Instance.PlaySFX(hardAttackCilp);
     public void OnFinalAttackSound() => AudioManager.Instance.PlaySFX(finalAttackCilp);
+    public void OnDodgeSound() => AudioManager.Instance.PlaySFX(DodgeCilp);
 
 }
