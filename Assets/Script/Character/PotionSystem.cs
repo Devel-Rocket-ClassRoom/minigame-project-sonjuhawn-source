@@ -61,6 +61,7 @@ public class PotionSystem : MonoBehaviour
     public void AddMaxPotion()
     {
         maxPotions++;
+        currentPotions++;
         OnPotionChanged?.Invoke(currentPotions, maxPotions);
     }
     private void HandleWaveCleared(int waveIndex)
