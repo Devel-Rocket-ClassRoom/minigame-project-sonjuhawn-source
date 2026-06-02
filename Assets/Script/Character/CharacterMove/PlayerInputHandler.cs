@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class PlayerInputHandler : MonoBehaviour
@@ -57,8 +58,16 @@ public class PlayerInputHandler : MonoBehaviour
     }
 
     // === 내부 핸들러: InputAction 콜백 → 이벤트 호출 ===
-    private void HandleAttack(InputAction.CallbackContext _) => OnAttack?.Invoke();
-    private void HandleHeavyAttack(InputAction.CallbackContext _) => OnHeavyAttack?.Invoke();
+    private void HandleAttack(InputAction.CallbackContext _)
+    {
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
+        OnAttack?.Invoke();
+    }
+    private void HandleHeavyAttack(InputAction.CallbackContext _)
+    {
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
+        OnHeavyAttack?.Invoke();
+    }
     private void HandleDodge(InputAction.CallbackContext _) => OnDodge?.Invoke();
     private void HandleSkill(InputAction.CallbackContext _) => OnSkill?.Invoke();
     private void HandlePotion(InputAction.CallbackContext _) => OnPotion?.Invoke();
