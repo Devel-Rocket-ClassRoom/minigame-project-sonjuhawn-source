@@ -3109,8 +3109,8 @@ MonoBehaviour:
   potion: {fileID: 1712088851}
   playerStats: {fileID: 1026996443}
   potionUpgradeCost: 5
-  healCost: 3
-  statUpgradeCost: 1
+  healCost: 5
+  statUpgradeCost: 2
 --- !u!4 &631278595
 Transform:
   m_ObjectHideFlags: 0

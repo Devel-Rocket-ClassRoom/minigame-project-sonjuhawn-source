@@ -19,8 +19,6 @@ public class ShopSystem : MonoBehaviour
 
     public void OpenShop()
     {
-        Debug.Log($"ShopOpen: {Time.realtimeSinceStartup}");
-
         PauseManager.Instance.Pause();
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.Confined;

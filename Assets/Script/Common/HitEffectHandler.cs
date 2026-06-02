@@ -5,27 +5,27 @@ public class HitEffectHandler : MonoBehaviour
     [SerializeField] private GameObject hitEffectPrefab;
     private HealthSystem health;
     private MonsterHealth monsterHealth;
-
+    private BossHealth bossHealth;
 
     private void Awake()
     {
         health = GetComponent<HealthSystem>();
         monsterHealth = GetComponent<MonsterHealth>();
-
-        if (health != null) health.OnDamaged += PlayEffect;
-        if (monsterHealth != null) monsterHealth.OnDamaged += PlayEffect;
+        bossHealth = GetComponent<BossHealth>();
     }
 
     private void OnEnable()
     {
         if (health != null) health.OnDamaged += PlayEffect;
         if (monsterHealth != null) monsterHealth.OnDamaged += PlayEffect;
+        if (bossHealth != null) bossHealth.OnDamaged += PlayEffect;
     }
 
     private void OnDisable()
     {
         if (health != null) health.OnDamaged -= PlayEffect;
         if (monsterHealth != null) monsterHealth.OnDamaged -= PlayEffect;
+        if (bossHealth != null) bossHealth.OnDamaged -= PlayEffect;
     }
 
     private void PlayEffect()
