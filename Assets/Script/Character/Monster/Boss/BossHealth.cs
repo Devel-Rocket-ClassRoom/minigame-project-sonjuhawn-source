@@ -5,6 +5,7 @@ public class BossHealth : MonoBehaviour, IDamageable
 {
     [SerializeField] private BossData data;
     [SerializeField] private GameObject damagePopupPrefab;
+    [SerializeField] private Transform damageCanvas;
 
     private int currentHp;
 
@@ -23,6 +24,7 @@ public class BossHealth : MonoBehaviour, IDamageable
     private void Awake()
     {
         currentHp = MaxHp;
+        damageCanvas = GameObject.Find("PopUpCanvas").transform;
     }
 
     public void TakeDamage(int amount)
@@ -45,7 +47,7 @@ public class BossHealth : MonoBehaviour, IDamageable
             OnDamaged?.Invoke();
 
         var canvas = FindAnyObjectByType<Canvas>();
-        var popup = Instantiate(damagePopupPrefab, canvas.transform);
+        var popup = Instantiate(damagePopupPrefab, damageCanvas);
         popup.GetComponent<DamagePopup>().Init(amount, transform.position); ;
     }
 }

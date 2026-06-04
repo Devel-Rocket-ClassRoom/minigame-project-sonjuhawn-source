@@ -30,7 +30,6 @@ public class DamagePopup : MonoBehaviour
 
             Vector3 screenPos = Camera.main.WorldToScreenPoint(worldPos);
             rectTransform.position = screenPos + Vector3.up * (riseSpeed * elapsed);
-
             color.a = 1f - (elapsed / lifetime);
             damageText.color = color;
             yield return null;
