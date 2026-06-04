@@ -25,7 +25,6 @@ public class BossData : ScriptableObject
     public float rangedRange = 12f;
     public float rangedCooldown = 3f;
     public float rangedSpeed = 10f;
-    public Vector3 offset;
     public GameObject projectilePrefab;
 
     [Header("보상")]

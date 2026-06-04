@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Monster3
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   id: Beez_Honey
-  displayName: "\uBC8C"
+  displayName: Beez Honey
   prefabOverride: {fileID: 2531899109815802360, guid: 188d8c45cb3d9d044be0bca25afcfb5d, type: 3}
   maxHp: 15
   attackPower: 6

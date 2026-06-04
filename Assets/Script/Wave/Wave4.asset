@@ -10,13 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dfba0b16608abf448ab09a5d3d2ba5ef, type: 3}
-  m_Name: Wave3
+  m_Name: Wave4
   m_EditorClassIdentifier: Assembly-CSharp::WaveData
   spawnEntries:
-  - monster: {fileID: 11400000, guid: 4386f117891049d4796ad3fe6ab30e16, type: 2}
-    count: 7
-  - monster: {fileID: 11400000, guid: 493b7ac068f3cf642a6d89f9c2cc09aa, type: 2}
-    count: 3
+  - monster: {fileID: 11400000, guid: a3dbae0151edde943b6a770fba23873c, type: 2}
+    count: 5
   waveDelay: 2
   spawnDuration: 1
   bossPrefabOverride: {fileID: 0}

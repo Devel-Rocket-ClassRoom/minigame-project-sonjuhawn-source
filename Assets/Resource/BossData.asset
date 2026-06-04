@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6e68465f5dac8943a088f8b47cf1276, type: 3}
   m_Name: BossData
   m_EditorClassIdentifier: Assembly-CSharp::BossData
-  displayName: Boss
+  displayName: Flower Variant
   maxHp: 500
   attackPower: 20
   moveSpeed: 3

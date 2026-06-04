@@ -10,8 +10,8 @@ public enum AttackType
     Light3,
     Heavy1,
     Heavy2,
-    HeavyDash,        // 좌클 2타 후 강공
-    HeavyFinisher,    // 좌클 3타 후 강공
+    HeavyDash,        
+    HeavyFinisher,    
 }
 
 [System.Serializable]
@@ -31,7 +31,6 @@ public class PlayerCombat : MonoBehaviour
     private static readonly int DodgeHash = Animator.StringToHash("Dodge");
     private static readonly int DeadHash = Animator.StringToHash("Dead");
 
-    // 모든 액션 트리거 한 곳에 모아둠 — 새 트리거 추가 시 여기에도 함께 추가
     private static readonly int[] ActionTriggers =
     {
         AttackHash, HeavyAttack0Hash, HeavyAttack1Hash,
@@ -47,7 +46,7 @@ public class PlayerCombat : MonoBehaviour
 
     private int leftComboIndex = 0;
 
-    [SerializeField] private GameObject hitbox;   // 위의 Hitbox 자식 GameObject
+    [SerializeField] private GameObject hitbox;  
     [SerializeField] private SwordHitbox sword;
 
     [SerializeField] private float baseAnimSpeed = 1f;
@@ -214,7 +213,7 @@ public class PlayerCombat : MonoBehaviour
         float elapsed = 0f;
         float dropDuration = 0.15f;
         Vector3 currentPos = rb.position;
-        Vector3 targetPos = new Vector3(currentPos.x, 0f, currentPos.z); // 바닥으로
+        Vector3 targetPos = new Vector3(currentPos.x, 0f, currentPos.z);
 
         while (elapsed < dropDuration)
         {

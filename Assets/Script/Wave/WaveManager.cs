@@ -17,7 +17,6 @@ public enum WaveState
 public class WaveManager : MonoBehaviour
 {
     [SerializeField] WaveData[] waves;
-    [SerializeField] GameObject monsterPrefab;
     [SerializeField] SpawnPoint[] spawnPoints;
     [SerializeField] private GameObject Panelroot;
     [SerializeField] private HealthSystem playerHealth;
@@ -61,14 +60,14 @@ public class WaveManager : MonoBehaviour
 
     private void SpawnOne(MonsterData data, Transform at)
     {
-        GameObject prefab = data.prefabOverride != null ? data.prefabOverride : monsterPrefab;
+        GameObject prefab = data.prefabOverride;
         var monster = Instantiate(prefab, at.position, at.rotation);
         monster.GetComponent<MonsterController>().SetData(data);
         var health = monster.GetComponent<MonsterHealth>();
         AliveCount++;
         OnAliveCountChanged?.Invoke(AliveCount);
 
-        System.Action onDeath = null;
+        Action onDeath = null;
         onDeath = () =>
         {
             health.OnDeath -= onDeath;

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Monster1
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   id: turnipa
-  displayName: "\uC21C\uBB34"
+  displayName: turnipa
   prefabOverride: {fileID: 6194577820417657568, guid: 55059b21f3f5525429a6868eb8e0f400, type: 3}
   maxHp: 30
   attackPower: 3

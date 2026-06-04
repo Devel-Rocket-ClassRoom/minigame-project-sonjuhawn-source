@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Monster2
   m_EditorClassIdentifier: Assembly-CSharp::MonsterData
   id: Devil_Tree_Wither
-  displayName: "\uB098\uBB34"
+  displayName: Devil Tree Wither
   prefabOverride: {fileID: 8474194316745816215, guid: d691e7f2cad0da6419c086cc49d67a06, type: 3}
   maxHp: 80
   attackPower: 20

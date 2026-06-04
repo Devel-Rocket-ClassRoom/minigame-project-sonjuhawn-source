@@ -11,5 +11,8 @@ public class RestartPanel : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    public void OnClickQuit() { Application.Quit(); }
+    public void OnClickQuit() 
+    { 
+        Application.Quit(); 
+    }
 }
