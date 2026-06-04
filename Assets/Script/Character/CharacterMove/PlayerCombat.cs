@@ -195,7 +195,12 @@ public class PlayerCombat : MonoBehaviour
 
         lastDodgeTime = Time.time;
 
-        Vector3 direction = transform.forward;
+        Vector3 moveInput = new Vector3(input.MoveInput.x, 0, input.MoveInput.y);
+        Vector3 direction = moveInput.sqrMagnitude > 0.01f
+            ? Camera.main.transform.TransformDirection(moveInput).normalized  
+            : transform.forward; 
+        direction.y = 0;
+        direction.Normalize();
 
         SetTriggerExclusive(DodgeHash);
         StartCoroutine(DodgeMove(direction));
@@ -203,6 +208,12 @@ public class PlayerCombat : MonoBehaviour
 
     private IEnumerator DodgeMove(Vector3 direction)
     {
+        if (direction != Vector3.zero)
+            transform.rotation = Quaternion.LookRotation(direction);
+
+        float savedSpeed = anim.speed;
+        anim.speed = 1f; 
+
         float elapsed = 0f;
         Vector3 velocity = direction * (dodgeDistance / dodgeDuration);
 
@@ -212,6 +223,8 @@ public class PlayerCombat : MonoBehaviour
             elapsed += Time.deltaTime;
             yield return new WaitForFixedUpdate();
         }
+
+        anim.speed = savedSpeed;
     }
 
     private void HandleDeath()
