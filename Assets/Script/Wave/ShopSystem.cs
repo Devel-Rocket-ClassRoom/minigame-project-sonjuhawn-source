@@ -59,7 +59,7 @@ public class ShopSystem : MonoBehaviour
         if (gold.SpendGold(statUpgradeCost))
         {
             AudioManager.Instance.PlaySFX(UsingGoldCilp);
-            StatType picked = (StatType)UnityEngine.Random.Range(0, 4); // 0~3 → enum 값으로 캐스팅
+            StatType picked = (StatType)UnityEngine.Random.Range(0, 4);
             playerStats.Grow(picked, 1);
             ToastManager.Instance.Show($"{picked} +1");
         }

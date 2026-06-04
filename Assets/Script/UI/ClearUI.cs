@@ -14,6 +14,7 @@ public class ClearUI : MonoBehaviour
     [SerializeField] private TMP_Text killsText;
     [SerializeField] private TMP_Text spentText;
     [SerializeField] private TMP_Text timeText;
+    [SerializeField] private GameObject buttonsPanel;
 
     [SerializeField] private float delayBetween = 1f;
 
@@ -40,6 +41,8 @@ public class ClearUI : MonoBehaviour
 
     private IEnumerator ShowStats()
     {
+        buttonsPanel.SetActive(false);
+
         killsText.gameObject.SetActive(false);
         spentText.gameObject.SetActive(false);
         timeText.gameObject.SetActive(false);
@@ -57,11 +60,16 @@ public class ClearUI : MonoBehaviour
         int seconds = (int)(waveManager.ElapsedTime % 60);
         timeText.text = $"Clear Time: {minutes:00}:{seconds:00}";
         timeText.gameObject.SetActive(true);
+
+        yield return new WaitForSecondsRealtime(delayBetween);
+        buttonsPanel.SetActive(true); // 마지막에 버튼 활성화
     }
 
     public void OnClickRestart()
     {
         Time.timeScale = 1f;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 

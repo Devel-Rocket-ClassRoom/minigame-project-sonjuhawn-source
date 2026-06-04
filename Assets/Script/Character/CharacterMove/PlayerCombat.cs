@@ -176,8 +176,55 @@ public class PlayerCombat : MonoBehaviour
     public void SetAttackType(AttackType type)
     {
         if (!multiplierMap.TryGetValue(type, out float mult)) mult = 1f;
-        int dmg = Mathf.RoundToInt(stats.Strength * mult);
+        int baseDmg = 10;
+        int bonus = Mathf.Max(0, stats.Strength - 10) * 2;
+        int dmg = Mathf.RoundToInt((baseDmg + bonus) * mult);
         sword.SetDamage(dmg);
+    }
+
+    public void OnFinisherJump()
+    {
+        rb.useGravity = false;
+        StartCoroutine(LiftUp());
+    }
+
+    public void OnFinisherLand()
+    {
+        StopCoroutine(LiftUp());
+        StartCoroutine(DropDown());
+    }
+
+    private IEnumerator LiftUp()
+    {
+        float elapsed = 0f;
+        float liftDuration = 0.2f;
+        float liftHeight = 0.5f;
+        Vector3 originPos = rb.position;
+
+        while (elapsed < liftDuration)
+        {
+            elapsed += Time.deltaTime;
+            rb.MovePosition(originPos + Vector3.up * (liftHeight * elapsed / liftDuration));
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
+    private IEnumerator DropDown()
+    {
+        float elapsed = 0f;
+        float dropDuration = 0.15f;
+        Vector3 currentPos = rb.position;
+        Vector3 targetPos = new Vector3(currentPos.x, 0f, currentPos.z); // 바닥으로
+
+        while (elapsed < dropDuration)
+        {
+            elapsed += Time.deltaTime;
+            rb.MovePosition(Vector3.Lerp(currentPos, targetPos, elapsed / dropDuration));
+            yield return new WaitForFixedUpdate();
+        }
+
+        rb.MovePosition(targetPos);
+        rb.useGravity = true;
     }
 
     private void HandleDodge()
