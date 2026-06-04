@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class StatDistributionPanel : MonoBehaviour
 {
     // === 시스템 참조 ===
-    [SerializeField] private GameObject panelRoot;   // 추가
+    [SerializeField] private GameObject panelRoot;   
     [SerializeField] private ExperienceSystem exp;
     [SerializeField] private PlayerStats stats;
 
@@ -17,6 +17,7 @@ public class StatDistributionPanel : MonoBehaviour
     [SerializeField] private TMP_Text staminaValue;
     [SerializeField] private Button confirmButton;
 
+    [SerializeField] private AudioClip statUpgradeClip;
 
     // === 이벤트 구독/해제 ===
     private void OnEnable()
@@ -42,8 +43,11 @@ public class StatDistributionPanel : MonoBehaviour
 
     public void OnPlus(int statTypeInt)
     {
-        if(exp.SpendPoint((StatType)statTypeInt))
+        if (exp.SpendPoint((StatType)statTypeInt))
+        {
+            AudioManager.Instance.PlaySFX(statUpgradeClip);
             Refresh();
+        }
     }
 
     public void OnConfirm()

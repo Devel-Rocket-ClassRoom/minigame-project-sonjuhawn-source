@@ -12,6 +12,8 @@ public class ShopSystem : MonoBehaviour
     [SerializeField] private int healCost = 80;
     [SerializeField] private int statUpgradeCost = 50;
 
+    [SerializeField] private AudioClip UsingGoldCilp;
+
     public int PotionUpgradeCost => potionUpgradeCost;
     public int HealCost => healCost;
     public int StatUpgradeCost => statUpgradeCost;
@@ -38,6 +40,7 @@ public class ShopSystem : MonoBehaviour
     {
         if (gold.SpendGold(potionUpgradeCost))
         {
+            AudioManager.Instance.PlaySFX(UsingGoldCilp);
             potion.AddMaxPotion();
         }
     }
@@ -46,6 +49,7 @@ public class ShopSystem : MonoBehaviour
     {
         if (gold.SpendGold(healCost))
         {
+            AudioManager.Instance.PlaySFX(UsingGoldCilp);
             playerHealth.Heal(playerHealth.MaxHp);
         }
     }
@@ -54,6 +58,7 @@ public class ShopSystem : MonoBehaviour
     {
         if (gold.SpendGold(statUpgradeCost))
         {
+            AudioManager.Instance.PlaySFX(UsingGoldCilp);
             StatType picked = (StatType)UnityEngine.Random.Range(0, 4); // 0~3 → enum 값으로 캐스팅
             playerStats.Grow(picked, 1);
             ToastManager.Instance.Show($"{picked} +1");
