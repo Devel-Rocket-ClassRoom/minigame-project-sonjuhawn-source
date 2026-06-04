@@ -118,14 +118,14 @@ Features:
 ---
 
 ## TODO
-- 보스 원거리 공격 패턴 추가 (RangedAttackNode)
 - anim speed per attack type (not global)
-- remove debug inputs (Test.cs, HealthSystem J키)
-- animation event cleanup
 - 포션 파티클 에셋 적용
 - pooling (optional)
 - 상점 시스템 (AddMaxPotion 연동) ✓
-- 보스 웨이브 스폰: WaveData에 bossPrefabOverride 추가, BossHealth.OnDeath로 alive 추적 (방식 1번)
+- 보스 웨이브 스폰: WaveData에 bossPrefabOverride 추가, BossHealth.OnDeath로 alive 추적 (방식 1번) ✓
+- 보스 원거리 공격 패턴 추가 (RangedAttackNode) ✓
+- remove debug inputs (Test.cs) ✓
+- 튜토리얼 패널: StartUI에 ScrollView 기반 조작법 페이지 제작 중
 
 ---
 
