@@ -22,6 +22,8 @@ public class MonsterController : MonoBehaviour
     public Transform Target { get; private set; }
     public IMonsterState Current { get; private set; }
 
+    [SerializeField] private GameObject heavyAttackEffectPrefab;
+
     private void Awake()
     {
         Anim = GetComponent<Animator>();
@@ -101,6 +103,12 @@ public class MonsterController : MonoBehaviour
 
     public void OnHeavyAttackHit()
     {
+        if (heavyAttackEffectPrefab != null)
+        {
+            var vfx = Instantiate(heavyAttackEffectPrefab, transform.position, Quaternion.identity);
+            Destroy(vfx, 2f);
+        }
+
         if (Health.IsDead || Target == null) return;
         float distance = Vector3.Distance(transform.position, Target.position);
         if (distance <= data.attackRange + 0.5f)

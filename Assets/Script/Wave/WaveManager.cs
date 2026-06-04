@@ -155,6 +155,7 @@ public class WaveManager : MonoBehaviour
 
     private IEnumerator RunBossWave(GameObject bossPrefab)
     {
+        AudioManager.Instance.PlayBGM(AudioManager.Instance.BossBGM);
         State = WaveState.InProgress;
         var boss = Instantiate(bossPrefab, spawnPoints[0].transform.position, Quaternion.identity);
         var bossanim = boss.GetComponent<Animator>();
