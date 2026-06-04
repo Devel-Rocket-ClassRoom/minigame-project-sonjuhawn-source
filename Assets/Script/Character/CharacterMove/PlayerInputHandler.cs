@@ -16,7 +16,9 @@ public class PlayerInputHandler : MonoBehaviour
     public event Action OnHeavyAttack;
     public event Action OnDodge;
     public event Action OnSkill;       
-    public event Action OnPotion;  
+    public event Action OnPotion;
+
+    private bool _isPointerOverUI;
 
     private void Awake()
     {
@@ -53,6 +55,8 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void Update()
     {
+        _isPointerOverUI = EventSystem.current != null &&
+                       EventSystem.current.IsPointerOverGameObject();
         MoveInput = _actions.Player.Move.ReadValue<Vector2>();
         LookInput = _actions.Player.Look.ReadValue<Vector2>();
     }
@@ -60,12 +64,12 @@ public class PlayerInputHandler : MonoBehaviour
     // === 내부 핸들러: InputAction 콜백 → 이벤트 호출 ===
     private void HandleAttack(InputAction.CallbackContext _)
     {
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
+        if (_isPointerOverUI) return;
         OnAttack?.Invoke();
     }
     private void HandleHeavyAttack(InputAction.CallbackContext _)
     {
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
+        if (_isPointerOverUI) return;
         OnHeavyAttack?.Invoke();
     }
     private void HandleDodge(InputAction.CallbackContext _) => OnDodge?.Invoke();

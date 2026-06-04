@@ -4,6 +4,7 @@ using UnityEngine;
 public class MonsterHealth : MonoBehaviour, IDamageable
 {
     [SerializeField] private MonsterData data;
+    [SerializeField] private GameObject damagePopupPrefab;
 
     private int currentHp;
 
@@ -32,6 +33,10 @@ public class MonsterHealth : MonoBehaviour, IDamageable
             OnDeath?.Invoke();
         else
             OnDamaged?.Invoke();
+
+        var canvas = FindAnyObjectByType<Canvas>();
+        var popup = Instantiate(damagePopupPrefab, canvas.transform);
+        popup.GetComponent<DamagePopup>().Init(amount, transform.position);
     }
 
     public void Initialize(MonsterData d)

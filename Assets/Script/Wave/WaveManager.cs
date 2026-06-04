@@ -176,6 +176,9 @@ public class WaveManager : MonoBehaviour
         bossanim.SetTrigger("Appear");
         var bossHealth = boss.GetComponent<BossHealth>();
 
+        var bossHpBar = FindAnyObjectByType<BossHpBar>();
+        bossHpBar.Setup(bossHealth);
+
         bool bossDead = false;
         bossHealth.OnDeath += () => 
         { bossDead = true; 
