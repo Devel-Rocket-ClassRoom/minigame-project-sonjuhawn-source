@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public enum WaveState
@@ -22,11 +23,14 @@ public class WaveManager : MonoBehaviour
     [SerializeField] private HealthSystem playerHealth;
     [SerializeField] private ShopUI shopUI;
 
-
+    private float startTime;
+    public float ElapsedTime { get; private set; }
     public int CurrentWaveIndex { get; private set; } = -1;
     public int AliveCount { get; private set; }
     public WaveState State { get; private set; } = WaveState.Idle;
     public int TotalWaves => waves?.Length ?? 0;
+    public int TotalKills { get; private set; }
+
 
     public event Action<int> OnWaveStarted;
     public event Action<int> OnWaveCleared;
@@ -47,6 +51,8 @@ public class WaveManager : MonoBehaviour
 
     private void Start()
     {
+        startTime = Time.time;
+
         if (spawnPoints == null || spawnPoints.Length == 0)
             spawnPoints = FindObjectsByType<SpawnPoint>(FindObjectsSortMode.None);
 
@@ -68,6 +74,7 @@ public class WaveManager : MonoBehaviour
             health.OnDeath -= onDeath;
             AliveCount--;
             OnAliveCountChanged?.Invoke(AliveCount);
+            TotalKills++;
         };
         health.OnDeath += onDeath;
     }
@@ -76,8 +83,15 @@ public class WaveManager : MonoBehaviour
     {
         StopAllCoroutines();
         Cursor.lockState = CursorLockMode.None;
+
+        var inputProvider = FindAnyObjectByType<CinemachineCamera>();
+        if (inputProvider != null) inputProvider.enabled = false;
+
         foreach (var m in FindObjectsByType<MonsterController>(FindObjectsSortMode.None))
+        {
             m.ChangeState(new MonsterIdleState());
+            m.Target = null;
+        }
     }
 
     private void ShowRestartUI()
@@ -163,7 +177,10 @@ public class WaveManager : MonoBehaviour
         var bossHealth = boss.GetComponent<BossHealth>();
 
         bool bossDead = false;
-        bossHealth.OnDeath += () => bossDead = true;
+        bossHealth.OnDeath += () => 
+        { bossDead = true; 
+            ElapsedTime = Time.time - startTime;
+        };
 
         yield return new WaitUntil(() => bossDead);
     }

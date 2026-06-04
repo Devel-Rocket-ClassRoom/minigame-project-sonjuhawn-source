@@ -5,7 +5,9 @@ public class RestartPanel : MonoBehaviour
 {
     public void OnClickRestart()
     {
-        Time.timeScale = 1f;  // 혹시 pause 상태면 해제
+        Time.timeScale = 1f;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 

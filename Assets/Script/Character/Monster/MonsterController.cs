@@ -19,7 +19,7 @@ public class MonsterController : MonoBehaviour
     public MonsterData Data => data;
     public Animator Anim { get; private set; }
     public MonsterHealth Health { get; private set; }
-    public Transform Target { get; private set; }
+    public Transform Target { get; set; }
     public IMonsterState Current { get; private set; }
 
     [SerializeField] private GameObject heavyAttackEffectPrefab;

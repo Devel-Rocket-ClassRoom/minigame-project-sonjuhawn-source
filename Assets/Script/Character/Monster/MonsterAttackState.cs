@@ -12,8 +12,10 @@ public class MonsterAttackState : IMonsterState
     }
     public void Tick(MonsterController ctx) 
     {
+        if (ctx.Target == null) return;
         ctx.FacePlayer();
-        if (Time.time < nextAttackTime) return;   // 쿨다운 중이면 그냥 대기
+
+        if (Time.time < nextAttackTime) return;  
 
         float distance = Vector3.Distance(ctx.transform.position, ctx.Target.position);
         if (distance > ctx.Data.attackRange)
