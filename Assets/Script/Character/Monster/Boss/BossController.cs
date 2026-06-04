@@ -80,16 +80,8 @@ public class BossController : MonoBehaviour
 
     private void HandleDeath()
     {
-        // BT 멈춤
         enabled = false;
 
-        // 보상 지급
-        if (bb.target.TryGetComponent<ExperienceSystem>(out var exp))
-            exp.AddExp(data.expReward);
-        if (bb.target.TryGetComponent<GoldSystem>(out var gold))
-            gold.AddGold(data.goldReward);
-
-        // 사망 애니
         bb.anim.SetTrigger("Die");
     }
 
