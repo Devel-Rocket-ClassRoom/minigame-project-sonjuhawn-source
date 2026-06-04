@@ -4,16 +4,21 @@ using UnityEngine;
 public class BossHealth : MonoBehaviour, IDamageable
 {
     [SerializeField] private BossData data;
+    [SerializeField] private GameObject damagePopupPrefab;
 
     private int currentHp;
 
     public int CurrentHp => currentHp;
     public int MaxHp => data != null ? data.maxHp : 0;
     public bool IsDead => currentHp <= 0;
+    public string DisplayName => data.displayName;
 
     public event Action<int, int> OnHpChanged;
     public event Action OnDeath;
     public event Action OnDamaged;
+
+    public event Action OnFirstHit;
+    private bool firstHitFired = false;
 
     private void Awake()
     {
@@ -22,6 +27,12 @@ public class BossHealth : MonoBehaviour, IDamageable
 
     public void TakeDamage(int amount)
     {
+        if (!firstHitFired)
+        {
+            firstHitFired = true;
+            OnFirstHit?.Invoke();
+        }
+
         if (IsDead) 
             return;
 
@@ -32,5 +43,9 @@ public class BossHealth : MonoBehaviour, IDamageable
             OnDeath?.Invoke();
         else
             OnDamaged?.Invoke();
+
+        var canvas = FindAnyObjectByType<Canvas>();
+        var popup = Instantiate(damagePopupPrefab, canvas.transform);
+        popup.GetComponent<DamagePopup>().Init(amount, transform.position); ;
     }
 }
