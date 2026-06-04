@@ -78,6 +78,21 @@ public class BossController : MonoBehaviour
             playerHealth.TakeDamage((int)(data.attackPower * 1.5f));
     }
 
+    public void OnRangedAttackFire()
+    {
+        Debug.Log("[Ranged] OnRangedAttackFire CALLED");
+
+        if (bb.target == null || data.projectilePrefab == null) return;
+
+        Vector3 spawnPos = transform.TransformPoint(data.muzzleLocalOffset); // BossData에 muzzleLocalOffset 추가 필요
+        Vector3 dir = (bb.target.position + Vector3.up * 1f - spawnPos).normalized;
+
+        var proj = Instantiate(data.projectilePrefab, spawnPos, Quaternion.identity);
+        var mp = proj.GetComponent<MonsterProjectile>();
+        if (mp != null)
+            mp.Init(data.attackPower, data.rangedSpeed, dir); // BossData.rangedSpeed 이미 있음
+    }
+
     private void HandleDeath()
     {
         enabled = false;
