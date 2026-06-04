@@ -64,7 +64,6 @@ public class OptionPanel : MonoBehaviour
         if (inputAxis == null) return;
         foreach (var controller in inputAxis.Controllers)
         {
-            Debug.Log(controller.Name);
             if (controller.Name.Contains("Y"))
                 controller.Input.Gain = -value;
             else
