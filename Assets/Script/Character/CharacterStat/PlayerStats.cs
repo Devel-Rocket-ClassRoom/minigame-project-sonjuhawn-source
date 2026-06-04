@@ -23,7 +23,6 @@ public class PlayerStats : MonoBehaviour, IStatProvider
 
     public event Action OnStatChanged;
 
-    // === 개별 스탯 강화 (2주차 정식 UI에서 사용) ===
     public void Grow(StatType type, int amount = 1)
     {
         switch (type)

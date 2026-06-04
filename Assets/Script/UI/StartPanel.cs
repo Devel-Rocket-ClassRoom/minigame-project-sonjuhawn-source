@@ -9,6 +9,7 @@ public class StartPanel : MonoBehaviour
     [SerializeField] private Transform menuCameraPoint;
     [SerializeField] private CinemachineCamera gameCamera;
     [SerializeField] private GameObject hudCanvas;
+    public bool IsGameStarted { get; private set; } = false;
 
     private void Start()
     {
@@ -24,6 +25,7 @@ public class StartPanel : MonoBehaviour
 
     public void OnStartButton()
     {
+        IsGameStarted = true;
         hudCanvas.SetActive(true);
         panel.SetActive(false);
         Time.timeScale = 1f;

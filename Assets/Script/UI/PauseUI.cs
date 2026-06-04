@@ -6,6 +6,9 @@ public class PauseUI : MonoBehaviour
     [SerializeField] private GameObject panel;
     private InputSystem_Actions _actions;
 
+    [SerializeField] private StartPanel startPanel;
+    [SerializeField] private OptionPanel optionPanel;
+
     private void Awake()
     {
         _actions = new InputSystem_Actions();
@@ -41,6 +44,8 @@ public class PauseUI : MonoBehaviour
 
     private void HandlePause(InputAction.CallbackContext _)
     {
+        if (!startPanel.IsGameStarted) return;
+        if (optionPanel.IsOpen) return; // 추가
         if (panel.activeSelf) Resume();
         else Pause();
     }
