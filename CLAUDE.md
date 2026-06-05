@@ -1,161 +1,64 @@
 # Project Summary (Ultra Compact)
 
-## Genre
-- BDO-style action hack & slash
-- Wave-based (5–10 stages + boss)
+## 완성 (최종 빌드)
+- BDO-style action hack & slash, 5웨이브 + 보스
+- 포폴 목적, Unity URP
 
 ---
 
-## Core Combat
-- LMB: 3-hit combo (stamina +)
-- RMB: heavy combo (stamina -)
-- Space: dodge (i-frame, stamina -, short CD)
-
-### Design
-- InputSystem
-- combo buffer
-- stamina loop (light gain / others cost)
-- FSM-based player
+## Combat
+- LMB 3타 콤보 / RMB 강공 / Space 회피(입력방향) / Finisher 점프
+- InputSystem, 콤보버퍼, 스태미나, FSM-based player
+- hitbox trigger + anim event, STR×multiplier, AttackType Dictionary
 
 ---
 
 ## Stats
-- STR: damage
-- AGI: move + anim speed
-- VIT: HP
-- STA: stamina
-
-### Level
-- Exp: 100 + (lvl-1)*50
-- Level up → stat UI (pause)
+- STR: damage / AGI: move+anim speed / VIT: HP / STA: stamina
+- 레벨업 → 스탯 분배 UI (pause)
 
 ---
 
-## Monsters (FSM)
-- Idle / Chase / Attack / Damaged / Dead
-- Types: melee / elite / ranged
-- SO data: HP, ATK, speed, ranges, cooldown, stagger, exp
+## Monsters
+- FSM: Idle/Chase/Attack/Damaged/Dead
+- melee / elite(telegraph) / ranged
+- MonsterData SO 기반
 
 ---
 
-## Boss (Done)
-- BT (Behavior Tree) — custom implementation
-- Blackboard 패턴으로 노드 간 상태 공유
-- 트리 구조: ContinueCharge > ContinueTelegraph > (거리 체크 → 패턴결정 → 근접/차지) > Chase
-- 근접: 애니메이션 이벤트 + OnAttackHit()
-- 차지: Telegraph(예고) → 돌진 → 쿨다운
-- 패턴 선택: chargeRange 이상이면 차지, 이하면 랜덤
-- BossHealth: IDamageable, OnHpChanged, OnDeath
-- BossData SO: HP/ATK/speed/ranges/cooldown/charge 관련 필드
-- future: 원거리 공격 (RangedAttackNode 추가 예정)
+## Boss
+- BT (custom) + Blackboard
+- 패턴: 근접 / 차지(telegraph→돌진) / 원거리(투사체)
+- 거리 기반 패턴 선택, 등장 애니메이션, HP바(첫 피격 시 표시)
 
 ---
 
-## Player (Done)
-- Move (Rigidbody MovePosition)
-- combo + heavy
-- dodge
-- stamina system
+## Wave
+- WaveData SO, Prep→Spawn→Fight→Clear→Rest(상점)→Next
+- 마지막 웨이브 후 보스 스폰 (bossPrefabOverride)
 
 ---
 
-## Combat System
-- hitbox (BoxCollider trigger)
-- anim events: enable/disable hitbox
-- HashSet = no multi-hit
-
-### Damage
-- STR × multiplier
-- AttackType enum + Dictionary
-- StateMachineBehaviour sync attack type
-
----
-
-## Wave System
-Flow:
-- Prep → Spawn → Fight → Clear → End
-
-Features:
-- WaveData SO
-- spawn points round-robin
-- shared prefab + inject data
-- alive tracking via death callback
-- events (start/clear/alive/all clear)
-- debug: kill all
+## Systems
+- GoldSystem / ExperienceSystem / PotionSystem / StaminaSystem
+- ShopSystem: 포션+1 / HP회복 / 랜덤스탯강화
+- PauseManager: pauseCount 기반 다중 UI 관리
+- AudioManager: BGM(일반/보스) / SFX 싱글톤
+- DamagePopup: 스크린스페이스 데미지 숫자
 
 ---
 
 ## UI
-- stat distribution panel (level up)
-- Time.timeScale = 0 pause
-- cursor unlock
-- ExpBar: Slider + 레벨 텍스트, OnExpChanged/OnLevelUp 구독
-- GoldHud: OnGoldChanged 구독, "Gold: {amount}" 표시
-- PotionHud: 아이콘 Image fillAmount(쿨타임), TMP_Text(current/max)
-
----
-
-## Gold & Exp (Done)
-- GoldSystem: AddGold / SpendGold, OnGoldChanged event
-- MonsterController HandleDeath → gold.AddGold(data.goldReward)
-- ExperienceSystem 기존 구현, ExpBar UI 신규 추가
-
----
-
-## Potion System (Done)
-- PotionSystem: maxPotions=2, healPercent=0.3, cooldown=3f
-- UsePotion: HP 풀이면 막음, 쿨타임, 파티클 재생
-- WaveManager.OnWaveCleared → RestoreAll()
-- PlayerInputHandler: OnPotion 이벤트 추가
-- PotionHud: fillAmount 쿨타임, current/max 텍스트
-
----
-
-## Map
-- 임포트한 에셋의 Demo 씬에서 Terrain 추출해서 임시 사용
-- Terrain 평탄화: Paint Height 도구 활용
-
----
-
-## TODO
-- anim speed per attack type (not global)
-- 포션 파티클 에셋 적용
-- pooling (optional)
-- 상점 시스템 (AddMaxPotion 연동) ✓
-- 보스 웨이브 스폰: WaveData에 bossPrefabOverride 추가, BossHealth.OnDeath로 alive 추적 (방식 1번) ✓
-- 보스 원거리 공격 패턴 추가 (RangedAttackNode) ✓
-- remove debug inputs (Test.cs) ✓
-- 튜토리얼 패널: StartUI에 ScrollView 기반 조작법 페이지 제작 중
-
----
-
-## Tech
-- Unity URP
-- InputSystem
-- FSM (player/monster), BT (boss)
-- ScriptableObject-driven
-
----
-
-## Save
-- stage progress
-- stats
-- skill upgrades
+- 시작 / 일시정지(ESC) / 게임오버 / 클리어(처치수/골드/시간)
+- 옵션(감도/BGM/SFX/음소거) / 상점 / 스탯분배 / 튜토리얼(ScrollView)
+- HpBar / StaminaBar / ExpBar / GoldHud / PotionHud / BossHpBar / ToastManager
 
 ---
 
 ## Architecture
 - input / state / physics / animation separated
-- FSM = gating
-- physics = MovePosition driven
-- combat = animation event driven
-
----
-
-## Roadmap
-W1: core combat + exp + monsters + boss + 5 waves  
-W2: skills + shop + boss patterns + 10 waves + NavMesh (optional)  
-W3: polish + balance + bugfix
+- FSM = gating / physics = MovePosition / combat = anim event driven
+- ScriptableObject-driven
 
 ---
 

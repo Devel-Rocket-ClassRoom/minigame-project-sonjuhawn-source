@@ -15,15 +15,19 @@
   - 의존성 역전 원칙(DIP) 적용
 
 ### 이벤트 기반 UI (Observer 패턴)
-- HpBar / ExpBar / GoldHud / PotionHud 모두 이벤트 구독 방식
+- HpBar / ExpBar / GoldHud / PotionHud / BossHpBar 모두 이벤트 구독 방식
 - 폴링 없이 상태 변화 시에만 업데이트
 
 ### ScriptableObject 데이터 주입
-- MonsterData / BossData로 데이터와 로직 분리
-- 인스펙터에서 밸런싱 가능, 코드 수정 없이 몬스터 추가
+- MonsterData / BossData / WaveData로 데이터와 로직 분리
+- 인스펙터에서 밸런싱 가능, 코드 수정 없이 몬스터/웨이브 추가
 
 ### SwordHitbox 멀티히트 방지
 - HashSet<IDamageable>으로 한 스윙에 동일 대상 중복 피격 구조적 차단
+
+### PauseManager (카운터 기반 다중 UI 관리)
+- pauseCount로 여러 UI 동시 pause 요청 처리
+- 모든 UI 닫혀야 timeScale 복구 — 레벨업+상점 동시 오픈 버그 해결
 
 ---
 
@@ -38,10 +42,12 @@
 ### 보스 — BT (직접 구현)
 - BTNode / BTSelector / BTSequence 직접 구현
 - BossBlackboard로 노드 간 데이터 공유 (Observer 없이 단방향 데이터 흐름)
+- 패턴: 근접 / 차지(telegraph→돌진) / 원거리(투사체) — 거리 기반 선택
 - 노드 구성:
-  - CheckDistance — within 플래그로 안/밖 양방향 재사용
-  - DecidePatternAction — 거리 기반 패턴 선택 + 쿨다운 체크
   - ContinueChargeAction — 최상단 배치로 돌진 중 다른 행동 차단
+  - DecidePatternAction — 거리 기반 패턴 선택 + 쿨다운 체크
+  - RangedAttackAction — 투사체 Instantiate + 쿨다운
+- 등장 시 isAppearing 플래그로 BT 실행 차단
 - 개선 포인트: ContinueCharge/Telegraph 중복 구조 → 추상 클래스로 통합 가능
 
 ---
@@ -50,11 +56,30 @@
 - FSM 기반 상태 관리 (Animator StateMachineBehaviour 연동)
 - 스태미나 루프: 일반공격 회복 / 강공격·구르기 소모
 - 콤보 버퍼 + 무적 프레임 (i-frame)
+- 회피: 입력 방향 기반, AGI 영향 제외
+- Finisher: 애니메이션 이벤트 기반 점프/착지 코루틴
 - 레벨업 시 스탯 분배 UI (STR/AGI/VIT/STA)
 
 ---
 
 ## 웨이브 시스템
 - WaveData SO로 웨이브별 몬스터 구성 정의
-- Idle → Preparing → Spawning → InProgress → Cleared → AllCleared
-- 사망 콜백으로 생존 몬스터 추적
+- Idle → Preparing → Spawning → InProgress → Cleared → Rest(상점) → Next
+- 마지막 웨이브 후 bossPrefabOverride로 보스 스폰
+- 사망 콜백으로 생존 몬스터 추적, TotalKills/ElapsedTime 집계
+
+---
+
+## UI 시스템
+- 시작 / 일시정지(ESC) / 게임오버 / 클리어(처치수/소비골드/시간 순차 표시)
+- 옵션: 마우스 감도(CinemachineInputAxisController) / BGM / SFX / 음소거
+- 상점: 포션+1 / HP회복 / 랜덤스탯강화
+- 데미지 팝업: 스크린 스페이스 변환, 위로 올라가며 페이드아웃
+- 보스 HP바: 첫 피격 시 활성화
+
+---
+
+## 사운드 / 이펙트
+- AudioManager 싱글톤: BGM(일반/보스 전환) / SFX PlayOneShot
+- 애니메이션 이벤트 기반 발소리 / 공격 사운드
+- HitEffectHandler: OnDamaged 이벤트 구독, VFX 프리팹 Instantiate
