@@ -36,8 +36,6 @@ public class StatDistributionPanel : MonoBehaviour
     {
         panelRoot.SetActive(true);
         PauseManager.Instance.Pause();
-        Cursor.visible = true;                      
-        Cursor.lockState = CursorLockMode.None;      
         Refresh();
     }
 
@@ -53,8 +51,6 @@ public class StatDistributionPanel : MonoBehaviour
     public void OnConfirm()
     {
         PauseManager.Instance.Resume();
-        Cursor.visible = false;                     
-        Cursor.lockState = CursorLockMode.Locked;
         panelRoot.SetActive(false);
     }
 

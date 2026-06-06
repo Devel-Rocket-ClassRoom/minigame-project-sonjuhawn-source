@@ -29,8 +29,6 @@ public class StartPanel : MonoBehaviour
         hudCanvas.SetActive(true);
         panel.SetActive(false);
         Time.timeScale = 1f;
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
         gameCamera.enabled = true;
     }
 }
