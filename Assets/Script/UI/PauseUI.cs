@@ -30,16 +30,12 @@ public class PauseUI : MonoBehaviour
     {
         panel.SetActive(true);
         PauseManager.Instance.Pause();
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
     }
 
     public void Resume()
     {
         panel.SetActive(false);
         PauseManager.Instance.Resume();
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void HandlePause(InputAction.CallbackContext _)

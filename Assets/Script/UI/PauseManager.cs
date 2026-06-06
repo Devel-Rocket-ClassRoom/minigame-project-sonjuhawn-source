@@ -14,10 +14,18 @@ public class PauseManager : MonoBehaviour
     {
         pauseCount++;
         Time.timeScale = 0f;
+        ApplyCursor();
     }
     public void Resume()
     {
         pauseCount = Mathf.Max(0, pauseCount - 1);
         if (pauseCount == 0) Time.timeScale = 1f;
+        ApplyCursor();
+    }
+    private void ApplyCursor()
+    {
+        bool uiOpen = pauseCount > 0;
+        Cursor.visible = uiOpen;
+        Cursor.lockState = uiOpen ? CursorLockMode.None : CursorLockMode.Locked;
     }
 }
