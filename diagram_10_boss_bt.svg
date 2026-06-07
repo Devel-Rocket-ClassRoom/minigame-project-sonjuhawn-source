@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 760" font-family="Malgun Gothic, Arial, sans-serif">
+  <rect width="1400" height="760" fill="#F5F6FA"/>
+
+  <!-- Title -->
+  <text x="40" y="40" font-size="20" font-weight="700" fill="#1A1D29">Boss Behavior Tree</text>
+  <text x="40" y="64" font-size="13" fill="#6B7280">BossController.cs · Selector / Sequence / Leaf Action 조합 · Blackboard 공유</text>
+
+  <!-- Legend (top-right) -->
+  <g transform="translate(1060, 30)">
+    <rect x="0" y="0" width="320" height="100" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="6"/>
+    <text x="14" y="22" font-size="12" font-weight="700" fill="#1A1D29">범례</text>
+
+    <rect x="14" y="34" width="80" height="22" rx="4" fill="#E63946"/>
+    <text x="54" y="49" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">Selector</text>
+    <text x="100" y="50" font-size="10" fill="#6B7280">하나라도 성공 시 OK</text>
+
+    <rect x="14" y="64" width="80" height="22" rx="4" fill="#1E2761"/>
+    <text x="54" y="79" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">Sequence</text>
+    <text x="100" y="80" font-size="10" fill="#6B7280">모두 성공해야 OK</text>
+  </g>
+
+  <!-- Connection lines (drawn first so they appear behind nodes) -->
+  <!-- Root → Level 1 -->
+  <line x1="700" y1="200" x2="170" y2="290" stroke="#1A1D29" stroke-width="1.5"/>
+  <line x1="700" y1="200" x2="420" y2="290" stroke="#1A1D29" stroke-width="1.5"/>
+  <line x1="700" y1="200" x2="800" y2="290" stroke="#1A1D29" stroke-width="1.5"/>
+  <line x1="700" y1="200" x2="1230" y2="290" stroke="#1A1D29" stroke-width="1.5"/>
+
+  <!-- Sequence → Sequence children -->
+  <line x1="800" y1="350" x2="570" y2="440" stroke="#1A1D29" stroke-width="1.5"/>
+  <line x1="800" y1="350" x2="780" y2="440" stroke="#1A1D29" stroke-width="1.5"/>
+  <line x1="800" y1="350" x2="1020" y2="440" stroke="#1A1D29" stroke-width="1.5"/>
+
+  <!-- Attack Selector → leaves -->
+  <line x1="1020" y1="500" x2="870" y2="590" stroke="#1A1D29" stroke-width="1.5"/>
+  <line x1="1020" y1="500" x2="1020" y2="590" stroke="#1A1D29" stroke-width="1.5"/>
+  <line x1="1020" y1="500" x2="1170" y2="590" stroke="#1A1D29" stroke-width="1.5"/>
+
+  <!-- ROOT (Selector) -->
+  <g transform="translate(700, 170)">
+    <rect x="-110" y="-30" width="220" height="60" rx="8" fill="#E63946"/>
+    <text x="0" y="-4" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">Root · Selector</text>
+    <text x="0" y="18" font-size="11" fill="#FFE5E7" text-anchor="middle">위에서부터 성공할 때까지 시도</text>
+  </g>
+
+  <!-- Level 1: ContinueCharge -->
+  <g transform="translate(170, 320)">
+    <rect x="-90" y="-30" width="180" height="60" rx="8" fill="#FFFFFF" stroke="#1A1D29" stroke-width="1.5"/>
+    <text x="0" y="-4" font-size="13" font-weight="700" fill="#1A1D29" text-anchor="middle">ContinueCharge</text>
+    <text x="0" y="16" font-size="10" fill="#6B7280" text-anchor="middle">차징 중이면 진행 유지</text>
+  </g>
+
+  <!-- Level 1: ContinueTelegraph -->
+  <g transform="translate(420, 320)">
+    <rect x="-100" y="-30" width="200" height="60" rx="8" fill="#FFFFFF" stroke="#1A1D29" stroke-width="1.5"/>
+    <text x="0" y="-4" font-size="13" font-weight="700" fill="#1A1D29" text-anchor="middle">ContinueTelegraph</text>
+    <text x="0" y="16" font-size="10" fill="#6B7280" text-anchor="middle">예고 모션 중이면 유지</text>
+  </g>
+
+  <!-- Level 1: Sequence (composite) -->
+  <g transform="translate(800, 320)">
+    <rect x="-120" y="-30" width="240" height="60" rx="8" fill="#1E2761"/>
+    <text x="0" y="-4" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">Sequence · 공격 결정</text>
+    <text x="0" y="16" font-size="10" fill="#CADCFC" text-anchor="middle">거리 체크 → 패턴 결정 → 실행</text>
+  </g>
+
+  <!-- Level 1: ChaseAction -->
+  <g transform="translate(1230, 320)">
+    <rect x="-90" y="-30" width="180" height="60" rx="8" fill="#FFFFFF" stroke="#1A1D29" stroke-width="1.5"/>
+    <text x="0" y="-4" font-size="13" font-weight="700" fill="#1A1D29" text-anchor="middle">ChaseAction</text>
+    <text x="0" y="16" font-size="10" fill="#6B7280" text-anchor="middle">위 모두 실패 시 추격</text>
+  </g>
+
+  <!-- Level 2: CheckDistance -->
+  <g transform="translate(570, 470)">
+    <rect x="-90" y="-30" width="180" height="60" rx="8" fill="#FFFFFF" stroke="#1A1D29" stroke-width="1.5"/>
+    <text x="0" y="-4" font-size="13" font-weight="700" fill="#1A1D29" text-anchor="middle">CheckDistance</text>
+    <text x="0" y="16" font-size="10" fill="#6B7280" text-anchor="middle">rangedRange 이내?</text>
+  </g>
+
+  <!-- Level 2: DecidePattern -->
+  <g transform="translate(780, 470)">
+    <rect x="-100" y="-30" width="200" height="60" rx="8" fill="#FFFFFF" stroke="#1A1D29" stroke-width="1.5"/>
+    <text x="0" y="-4" font-size="13" font-weight="700" fill="#1A1D29" text-anchor="middle">DecidePattern</text>
+    <text x="0" y="16" font-size="10" fill="#6B7280" text-anchor="middle">nextAttackPattern = 0/1/2</text>
+  </g>
+
+  <!-- Level 2: Attack Selector -->
+  <g transform="translate(1020, 470)">
+    <rect x="-110" y="-30" width="220" height="60" rx="8" fill="#E63946"/>
+    <text x="0" y="-4" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">Selector · 공격 실행</text>
+    <text x="0" y="16" font-size="10" fill="#FFE5E7" text-anchor="middle">패턴에 맞는 노드 발동</text>
+  </g>
+
+  <!-- Level 3: Melee -->
+  <g transform="translate(870, 620)">
+    <rect x="-80" y="-30" width="160" height="60" rx="8" fill="#FFFFFF" stroke="#1A1D29" stroke-width="1.5"/>
+    <text x="0" y="-4" font-size="13" font-weight="700" fill="#1A1D29" text-anchor="middle">MeleeAttack</text>
+    <text x="0" y="16" font-size="10" fill="#6B7280" text-anchor="middle">pattern == 0</text>
+  </g>
+
+  <!-- Level 3: Charge -->
+  <g transform="translate(1020, 620)">
+    <rect x="-80" y="-30" width="160" height="60" rx="8" fill="#FFFFFF" stroke="#1A1D29" stroke-width="1.5"/>
+    <text x="0" y="-4" font-size="13" font-weight="700" fill="#1A1D29" text-anchor="middle">ChargeAction</text>
+    <text x="0" y="16" font-size="10" fill="#6B7280" text-anchor="middle">pattern == 1 · 텔레그래프</text>
+  </g>
+
+  <!-- Level 3: Ranged -->
+  <g transform="translate(1170, 620)">
+    <rect x="-80" y="-30" width="160" height="60" rx="8" fill="#FFFFFF" stroke="#1A1D29" stroke-width="1.5"/>
+    <text x="0" y="-4" font-size="13" font-weight="700" fill="#1A1D29" text-anchor="middle">RangedAttack</text>
+    <text x="0" y="16" font-size="10" fill="#6B7280" text-anchor="middle">pattern == 2 · 투사체</text>
+  </g>
+
+  <!-- Footer: BB note -->
+  <g transform="translate(40, 700)">
+    <rect x="0" y="0" width="1320" height="40" fill="#1E2761" rx="6"/>
+    <text x="20" y="25" font-size="12" fill="#FFFFFF">
+      <tspan font-weight="700">Blackboard</tspan> · self / target / anim / data / nextAttackPattern / isCharging / isTelegraphing / isAttackCooldown · isChargeCooldown · isRangedCooldown — 노드 간 공유 상태
+    </text>
+  </g>
+</svg>

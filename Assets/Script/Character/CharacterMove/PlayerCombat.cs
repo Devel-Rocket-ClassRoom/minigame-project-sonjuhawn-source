@@ -73,6 +73,8 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private AudioClip finalAttackCilp;
     [SerializeField] private AudioClip DodgeCilp;
 
+    private bool canChainCombo = false;
+
     private void Awake()
     {
         input = GetComponent<PlayerInputHandler>();
@@ -137,9 +139,14 @@ public class PlayerCombat : MonoBehaviour
     {
         if (state.CurrentState == PlayerState.Dodging ||
         state.CurrentState == PlayerState.Damaged ||
-        state.CurrentState == PlayerState.HeavyAttacking ||
         state.CurrentState == PlayerState.Dead)
             return;
+
+        if (state.CurrentState == PlayerState.HeavyAttacking)
+        {
+            if (!canChainCombo) return;
+            canChainCombo = false;
+        }
 
         int cost;
         int triggerHash;
@@ -170,9 +177,22 @@ public class PlayerCombat : MonoBehaviour
         if (!canUse)
             return;
 
+        Debug.Log($"[Heavy] STAMINA CONSUMED -{cost}, remaining={stamina.CurrentStamina}");
+
+
         state.ChangeState(PlayerState.HeavyAttacking); 
         SetTriggerExclusive(triggerHash);
     }
+
+    public void OpenComboWindow()
+    {
+        canChainCombo = true;
+    }
+    public void CloseComboWindow()
+    {
+        canChainCombo = false;
+    }
+
     public void SetAttackType(AttackType type)
     {
         if (!multiplierMap.TryGetValue(type, out float mult)) mult = 1f;

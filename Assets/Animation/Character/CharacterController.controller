@@ -84,10 +84,10 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.1
+  m_TransitionDuration: 0.049999952
   m_TransitionOffset: 0
-  m_ExitTime: 0.8125
-  m_HasExitTime: 0
+  m_ExitTime: 0.9591959
+  m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
@@ -345,7 +345,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackTypeBehaviour
   type: 3
-  comboIndex: -1
+  comboIndex: 1
 --- !u!1102 &-3340828217388081351
 AnimatorState:
   serializedVersion: 6
@@ -807,7 +807,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: HeavyAttack0
+    m_ConditionEvent: HeavyAttack1
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -8668587853838438740}
@@ -818,7 +818,7 @@ AnimatorStateTransition:
   m_TransitionDuration: 0.7470678
   m_TransitionOffset: 0
   m_ExitTime: 0.62146527
-  m_HasExitTime: 1
+  m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 0
@@ -837,9 +837,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.56850195
+  m_TransitionDuration: 0.11020589
   m_TransitionOffset: 0
-  m_ExitTime: 0.8634823
+  m_ExitTime: 0.70506114
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -978,9 +978,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.51937187
+  m_TransitionDuration: 0.07876998
   m_TransitionOffset: 0
-  m_ExitTime: 0.75000024
+  m_ExitTime: 0.7500003
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0

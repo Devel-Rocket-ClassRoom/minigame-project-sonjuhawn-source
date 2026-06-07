@@ -30,6 +30,9 @@ public class MonsterProjectile : MonoBehaviour
         if (other.CompareTag("Projectile")) return;
         if (other.CompareTag("Monster")) return;
 
+        if (other.GetComponentInParent<BossController>() != null) return;
+        if (other.GetComponentInParent<MonsterController>() != null) return;
+
         if (hitEffectPrefab != null)
         {
             var vfx = Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);

@@ -16,18 +16,18 @@ MonoBehaviour:
   maxHp: 800
   attackPower: 20
   moveSpeed: 3
-  detectRange: 15
+  detectRange: 20
   attackRange: 2
-  attackCooldown: 3
+  attackCooldown: 2.5
   chargeRange: 8
   telegraphDuration: 2
-  chargeSpeed: 12
+  chargeSpeed: 18
   chargeDuration: 0.8
   chargeCooldown: 2
-  rangedRange: 12
+  rangedRange: 14
   rangedCooldown: 2
-  rangedSpeed: 10
-  offset: {x: 0, y: 0, z: 0}
+  rangedSpeed: 14
+  muzzleLocalOffset: {x: 0, y: 1.5, z: 0.5}
   projectilePrefab: {fileID: 3209590520731217740, guid: e5e8a476aa954334fb71e63e7df880cd, type: 3}
   expReward: 200
   goldReward: 100

@@ -80,8 +80,6 @@ public class BossController : MonoBehaviour
 
     public void OnRangedAttackFire()
     {
-        Debug.Log("[Ranged] OnRangedAttackFire CALLED");
-
         if (bb.target == null || data.projectilePrefab == null) return;
 
         Vector3 spawnPos = transform.TransformPoint(data.muzzleLocalOffset); // BossData에 muzzleLocalOffset 추가 필요
