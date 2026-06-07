@@ -21,8 +21,8 @@ MonoBehaviour:
   detectRange: 20
   attackRange: 2
   attackCooldown: 5
-  expReward: 30
-  goldReward: 20
+  expReward: 20
+  goldReward: 7
   staggerDuration: 0
   telegraphTime: 2
   heavyAttackPower: 20
