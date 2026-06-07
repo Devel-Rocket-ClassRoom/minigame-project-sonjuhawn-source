@@ -50,7 +50,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private SwordHitbox sword;
 
     [SerializeField] private float baseAnimSpeed = 1f;
-    [SerializeField] private float speedPerAgility = 0.02f;
+    [SerializeField] private float speedPerAgility = 0.03f;
 
     [SerializeField] private float dodgeDistance = 3f;
     [SerializeField] private float dodgeDuration = 0.3f;
@@ -176,7 +176,7 @@ public class PlayerCombat : MonoBehaviour
     {
         if (!multiplierMap.TryGetValue(type, out float mult)) mult = 1f;
         int baseDmg = 10;
-        int bonus = Mathf.Max(0, stats.Strength - 10) * 2;
+        int bonus = Mathf.Max(0, stats.Strength - 10) * 1;
         int dmg = Mathf.RoundToInt((baseDmg + bonus) * mult);
         sword.SetDamage(dmg);
     }

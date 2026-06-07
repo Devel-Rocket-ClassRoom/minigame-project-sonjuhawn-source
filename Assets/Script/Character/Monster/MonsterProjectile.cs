@@ -27,7 +27,6 @@ public class MonsterProjectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"[Proj] HIT: {other.name} (tag={other.tag})");
         if (other.CompareTag("Projectile")) return;
         if (other.CompareTag("Monster")) return;
 
