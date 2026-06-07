@@ -9377,9 +9377,9 @@ MonoBehaviour:
   playerHealth: {fileID: 1026996441}
   potion: {fileID: 1712088851}
   playerStats: {fileID: 1026996443}
-  potionUpgradeCost: 5
-  healCost: 5
-  statUpgradeCost: 2
+  potionUpgradeCost: 15
+  healCost: 10
+  statUpgradeCost: 4
   UsingGoldCilp: {fileID: 8300000, guid: 822175d8687dda6478b9c445086d6262, type: 3}
 --- !u!4 &631278595
 Transform:
