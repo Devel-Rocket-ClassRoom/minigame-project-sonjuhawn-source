@@ -30,5 +30,7 @@ public class StartPanel : MonoBehaviour
         panel.SetActive(false);
         Time.timeScale = 1f;
         gameCamera.enabled = true;
+        Cursor.visible = false;                      
+        Cursor.lockState = CursorLockMode.Locked;
     }
 }

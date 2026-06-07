@@ -8,6 +8,8 @@ public class PauseUI : MonoBehaviour
 
     [SerializeField] private StartPanel startPanel;
     [SerializeField] private OptionPanel optionPanel;
+    [SerializeField] private GameObject clearUIPanel;
+    [SerializeField] private GameObject restartPanel;
 
     private void Awake()
     {
@@ -41,7 +43,9 @@ public class PauseUI : MonoBehaviour
     private void HandlePause(InputAction.CallbackContext _)
     {
         if (!startPanel.IsGameStarted) return;
-        if (optionPanel.IsOpen) return; // 추가
+        if (optionPanel.IsOpen) return;
+        if (clearUIPanel != null && clearUIPanel.activeSelf) return;
+        if (restartPanel != null && restartPanel.activeSelf) return;
         if (panel.activeSelf) Resume();
         else Pause();
     }

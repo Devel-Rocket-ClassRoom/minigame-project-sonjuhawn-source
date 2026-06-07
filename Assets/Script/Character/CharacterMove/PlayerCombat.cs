@@ -170,6 +170,7 @@ public class PlayerCombat : MonoBehaviour
         if (!canUse)
             return;
 
+        state.ChangeState(PlayerState.HeavyAttacking); 
         SetTriggerExclusive(triggerHash);
     }
     public void SetAttackType(AttackType type)
@@ -249,6 +250,7 @@ public class PlayerCombat : MonoBehaviour
         direction.Normalize();
 
         SetTriggerExclusive(DodgeHash);
+        anim.Play(DodgeHash, 0, 0f);
         StartCoroutine(DodgeMove(direction));
     }
 
