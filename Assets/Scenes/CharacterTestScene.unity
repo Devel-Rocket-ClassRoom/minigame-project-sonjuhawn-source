@@ -9377,9 +9377,9 @@ MonoBehaviour:
   playerHealth: {fileID: 1026996441}
   potion: {fileID: 1712088851}
   playerStats: {fileID: 1026996443}
-  potionUpgradeCost: 5
-  healCost: 5
-  statUpgradeCost: 2
+  potionUpgradeCost: 15
+  healCost: 10
+  statUpgradeCost: 4
   UsingGoldCilp: {fileID: 8300000, guid: 822175d8687dda6478b9c445086d6262, type: 3}
 --- !u!4 &631278595
 Transform:
@@ -34349,11 +34349,11 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: 9f224d011826e8c41bd5a7a5d3571879, type: 3}
     - target: {fileID: 3197272602802113200, guid: 1d9c465c8ea972f4fb3272e740325228, type: 3}
       propertyPath: speedPerAgility
-      value: 0.1
+      value: 0.08
       objectReference: {fileID: 0}
     - target: {fileID: 5364537392981551170, guid: 1d9c465c8ea972f4fb3272e740325228, type: 3}
       propertyPath: pointsPerLevel
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8909586843765618989, guid: 1d9c465c8ea972f4fb3272e740325228, type: 3}
       propertyPath: DodgeCilp
@@ -34369,7 +34369,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8909586843765618989, guid: 1d9c465c8ea972f4fb3272e740325228, type: 3}
       propertyPath: baseAnimSpeed
-      value: 1.5
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 8909586843765618989, guid: 1d9c465c8ea972f4fb3272e740325228, type: 3}
       propertyPath: dodgeDistance
@@ -34393,7 +34393,7 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: 1c700146af3f20e45a4b83c5eaa37784, type: 3}
     - target: {fileID: 8909586843765618989, guid: 1d9c465c8ea972f4fb3272e740325228, type: 3}
       propertyPath: speedPerAgility
-      value: 0.1
+      value: 0.02
       objectReference: {fileID: 0}
     - target: {fileID: 8909586843765618989, guid: 1d9c465c8ea972f4fb3272e740325228, type: 3}
       propertyPath: dodgeStaminaCost
