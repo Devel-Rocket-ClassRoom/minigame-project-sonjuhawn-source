@@ -1,4 +1,4 @@
-using System.Collections;
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,9 +22,9 @@ public class BossController : MonoBehaviour
             data = data
         };
 
-        bb.onAttackFired = () => StartCoroutine(AttackCooldown());
-        bb.onChargeFired = () => StartCoroutine(ChargeCooldown());
-        bb.onRangedFired = () => StartCoroutine(RangedCooldown());
+        bb.onAttackFired = () => AttackCooldownAsync().Forget();
+        bb.onChargeFired = () => ChargeCooldownAsync().Forget();
+        bb.onRangedFired = () => RangedCooldownAsync().Forget();
 
         // BT 트리 조립
         root = new BTSelector(new List<BTNode>
@@ -99,20 +99,19 @@ public class BossController : MonoBehaviour
     }
 
     // 공격 쿨다운 코루틴
-    private IEnumerator AttackCooldown()
+    private async UniTaskVoid AttackCooldownAsync()
     {
-        yield return new WaitForSeconds(data.attackCooldown);
+        await UniTask.Delay(System.TimeSpan.FromSeconds(data.attackCooldown));
         bb.isAttackCooldown = false;
     }
-    private IEnumerator ChargeCooldown()
+    private async UniTaskVoid ChargeCooldownAsync()
     {
-        yield return new WaitForSeconds(data.chargeCooldown);
+        await UniTask.Delay(System.TimeSpan.FromSeconds(data.chargeCooldown));
         bb.isChargeCooldown = false;
     }
-
-    private IEnumerator RangedCooldown()
+    private async UniTaskVoid RangedCooldownAsync()
     {
-        yield return new WaitForSeconds(data.rangedCooldown);
+        await UniTask.Delay(System.TimeSpan.FromSeconds(data.rangedCooldown));
         bb.isRangedCooldown = false;
     }
 
