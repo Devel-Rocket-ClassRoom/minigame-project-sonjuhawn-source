@@ -1,7 +1,9 @@
+using Cysharp.Threading.Tasks;
 using System;
-using System.Collections;
+using System.Threading;
 using Unity.Cinemachine;
 using UnityEngine;
+
 
 public enum WaveState
 {
@@ -36,6 +38,9 @@ public class WaveManager : MonoBehaviour
     public event Action<int> OnAliveCountChanged;
     public event Action OnAllWavesCleared;
 
+    private CancellationTokenSource _waveCts;
+
+
     private void OnEnable()
     {
         playerHealth.OnDeath += HandlePlayerDeath;
@@ -55,7 +60,8 @@ public class WaveManager : MonoBehaviour
         if (spawnPoints == null || spawnPoints.Length == 0)
             spawnPoints = FindObjectsByType<SpawnPoint>(FindObjectsSortMode.None);
 
-        StartCoroutine(RunWaves());
+        _waveCts = new CancellationTokenSource();
+        RunWavesAsync(_waveCts.Token).Forget();
     }
 
     private void SpawnOne(MonsterData data, Transform at)
@@ -80,7 +86,7 @@ public class WaveManager : MonoBehaviour
 
     private void HandlePlayerDeath()
     {
-        StopAllCoroutines();
+        _waveCts?.Cancel();
         Cursor.lockState = CursorLockMode.None;
 
         var inputProvider = FindAnyObjectByType<CinemachineCamera>();
@@ -99,15 +105,15 @@ public class WaveManager : MonoBehaviour
         Panelroot.SetActive(true);
     }
 
-    private IEnumerator RunSingleWave(WaveData wave)
+    private async UniTask RunSingleWaveAsync(WaveData wave, CancellationToken ct)
     {
         State = WaveState.Preparing;
-        yield return new WaitForSeconds(wave.waveDelay);
+        await UniTask.Delay(System.TimeSpan.FromSeconds(wave.waveDelay), cancellationToken: ct);
 
         if (spawnPoints == null || spawnPoints.Length == 0)
         {
             Debug.LogError("No spawn points!");
-            yield break;
+            return;
         }
 
         State = WaveState.Spawning;
@@ -121,44 +127,38 @@ public class WaveManager : MonoBehaviour
                 SpawnOne(entry.monster, spawnPoints[spIdx % spawnPoints.Length].transform);
                 spIdx++;
                 if (wave.spawnDuration > 0)
-                {
-                    yield return new WaitForSeconds(wave.spawnDuration);
-                }
+                    await UniTask.Delay(System.TimeSpan.FromSeconds(wave.spawnDuration), cancellationToken: ct);
             }
         }
 
         State = WaveState.InProgress;
-        while (AliveCount > 0)
-        {
-            yield return null;
-        }
+        await UniTask.WaitUntil(() => AliveCount <= 0, cancellationToken: ct);
 
         State = WaveState.Cleared;
         OnWaveCleared?.Invoke(CurrentWaveIndex);
     }
 
-    private IEnumerator RunWaves()
-    {
 
+    private async UniTask RunWavesAsync(CancellationToken ct)
+    {
         for (int i = 0; i < waves.Length; i++)
         {
             CurrentWaveIndex = i;
-            yield return RunSingleWave(waves[i]);
+            await RunSingleWaveAsync(waves[i], ct);
 
             if (waves[i].bossPrefabOverride != null)
             {
                 State = WaveState.Rest;
                 shopUI.Open();
-                yield return new WaitUntil(() => State == WaveState.Preparing);
-
-                yield return RunBossWave(waves[i].bossPrefabOverride);
+                await UniTask.WaitUntil(() => State == WaveState.Preparing, cancellationToken: ct);
+                await RunBossWaveAsync(waves[i].bossPrefabOverride, ct);
             }
 
             if (i < waves.Length - 1)
             {
                 State = WaveState.Rest;
                 shopUI.Open();
-                yield return new WaitUntil(() => State == WaveState.Preparing);
+                await UniTask.WaitUntil(() => State == WaveState.Preparing, cancellationToken: ct);
             }
         }
 
@@ -166,7 +166,7 @@ public class WaveManager : MonoBehaviour
         OnAllWavesCleared?.Invoke();
     }
 
-    private IEnumerator RunBossWave(GameObject bossPrefab)
+    private async UniTask RunBossWaveAsync(GameObject bossPrefab, CancellationToken ct)
     {
         AudioManager.Instance.PlayBGM(AudioManager.Instance.BossBGM);
         State = WaveState.InProgress;
@@ -179,12 +179,13 @@ public class WaveManager : MonoBehaviour
         bossHpBar.Setup(bossHealth);
 
         bool bossDead = false;
-        bossHealth.OnDeath += () => 
-        { bossDead = true; 
+        bossHealth.OnDeath += () =>
+        {
+            bossDead = true;
             ElapsedTime = Time.time - startTime;
         };
 
-        yield return new WaitUntil(() => bossDead);
+        await UniTask.WaitUntil(() => bossDead, cancellationToken: ct);
     }
 
     public void EndRest()
