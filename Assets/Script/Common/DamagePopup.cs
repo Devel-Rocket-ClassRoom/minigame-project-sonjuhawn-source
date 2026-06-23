@@ -1,4 +1,4 @@
-using System.Collections;
+using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
@@ -16,10 +16,10 @@ public class DamagePopup : MonoBehaviour
         rectTransform = GetComponent<RectTransform>();
         worldPos = position + Vector3.up * 1.5f;
         damageText.text = damage.ToString();
-        StartCoroutine(AnimateAndDestroy());
+        AnimateAndDestroyAsync().Forget();
     }
 
-    private IEnumerator AnimateAndDestroy()
+    private async UniTaskVoid AnimateAndDestroyAsync()
     {
         float elapsed = 0f;
         Color color = damageText.color;
@@ -27,12 +27,11 @@ public class DamagePopup : MonoBehaviour
         while (elapsed < lifetime)
         {
             elapsed += Time.deltaTime;
-
             Vector3 screenPos = Camera.main.WorldToScreenPoint(worldPos);
             rectTransform.position = screenPos + Vector3.up * (riseSpeed * elapsed);
             color.a = 1f - (elapsed / lifetime);
             damageText.color = color;
-            yield return null;
+            await UniTask.Yield();
         }
         Destroy(gameObject);
     }

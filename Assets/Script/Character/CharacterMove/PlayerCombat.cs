@@ -1,5 +1,6 @@
-using System.Collections;
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using static CharacterStateMachine;
 
@@ -74,6 +75,9 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private AudioClip DodgeCilp;
 
     private bool canChainCombo = false;
+
+    private CancellationTokenSource _liftCts;
+
 
     private void Awake()
     {
@@ -205,16 +209,17 @@ public class PlayerCombat : MonoBehaviour
     public void OnFinisherJump()
     {
         rb.useGravity = false;
-        StartCoroutine(LiftUp());
+        _liftCts = new CancellationTokenSource();
+        LiftUpAsync(_liftCts.Token).Forget();
     }
 
     public void OnFinisherLand()
     {
-        StopCoroutine(LiftUp());
-        StartCoroutine(DropDown());
+        _liftCts?.Cancel();
+        DropDownAsync().Forget();
     }
 
-    private IEnumerator LiftUp()
+    private async UniTaskVoid LiftUpAsync(CancellationToken ct)
     {
         float elapsed = 0f;
         float liftDuration = 0.2f;
@@ -223,13 +228,14 @@ public class PlayerCombat : MonoBehaviour
 
         while (elapsed < liftDuration)
         {
+            if (ct.IsCancellationRequested) return;
             elapsed += Time.deltaTime;
             rb.MovePosition(originPos + Vector3.up * (liftHeight * elapsed / liftDuration));
-            yield return new WaitForFixedUpdate();
+            await UniTask.WaitForFixedUpdate();
         }
     }
 
-    private IEnumerator DropDown()
+    private async UniTaskVoid DropDownAsync()
     {
         float elapsed = 0f;
         float dropDuration = 0.15f;
@@ -240,7 +246,7 @@ public class PlayerCombat : MonoBehaviour
         {
             elapsed += Time.deltaTime;
             rb.MovePosition(Vector3.Lerp(currentPos, targetPos, elapsed / dropDuration));
-            yield return new WaitForFixedUpdate();
+            await UniTask.WaitForFixedUpdate();
         }
 
         rb.MovePosition(targetPos);
@@ -271,16 +277,16 @@ public class PlayerCombat : MonoBehaviour
 
         SetTriggerExclusive(DodgeHash);
         anim.Play(DodgeHash, 0, 0f);
-        StartCoroutine(DodgeMove(direction));
+        DodgeMoveAsync(direction).Forget();
     }
 
-    private IEnumerator DodgeMove(Vector3 direction)
+    private async UniTaskVoid DodgeMoveAsync(Vector3 direction)
     {
         if (direction != Vector3.zero)
             transform.rotation = Quaternion.LookRotation(direction);
 
         float savedSpeed = anim.speed;
-        anim.speed = 1f; 
+        anim.speed = 1f;
 
         float elapsed = 0f;
         Vector3 velocity = direction * (dodgeDistance / dodgeDuration);
@@ -289,7 +295,7 @@ public class PlayerCombat : MonoBehaviour
         {
             rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime);
             elapsed += Time.deltaTime;
-            yield return new WaitForFixedUpdate();
+            await UniTask.WaitForFixedUpdate();
         }
 
         anim.speed = savedSpeed;

@@ -1,4 +1,4 @@
-using System.Collections;
+using Cysharp.Threading.Tasks;
 using TMPro;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -36,10 +36,10 @@ public class ClearUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         var inputProvider = FindAnyObjectByType<CinemachineCamera>();
         if (inputProvider != null) inputProvider.enabled = false;
-        StartCoroutine(ShowStats());
+        ShowStatsAsync().Forget();
     }
 
-    private IEnumerator ShowStats()
+    private async UniTaskVoid ShowStatsAsync()
     {
         buttonsPanel.SetActive(false);
 
@@ -47,22 +47,22 @@ public class ClearUI : MonoBehaviour
         spentText.gameObject.SetActive(false);
         timeText.gameObject.SetActive(false);
 
-        yield return new WaitForSecondsRealtime(delayBetween);
+        await UniTask.Delay(System.TimeSpan.FromSeconds(delayBetween), DelayType.UnscaledDeltaTime);
         killsText.text = $"Kill: {waveManager.TotalKills}";
         killsText.gameObject.SetActive(true);
 
-        yield return new WaitForSecondsRealtime(delayBetween);
+        await UniTask.Delay(System.TimeSpan.FromSeconds(delayBetween), DelayType.UnscaledDeltaTime);
         spentText.text = $"Spending Gold: {gold.TotalSpent}";
         spentText.gameObject.SetActive(true);
 
-        yield return new WaitForSecondsRealtime(delayBetween);
+        await UniTask.Delay(System.TimeSpan.FromSeconds(delayBetween), DelayType.UnscaledDeltaTime);
         int minutes = (int)(waveManager.ElapsedTime / 60);
         int seconds = (int)(waveManager.ElapsedTime % 60);
         timeText.text = $"Clear Time: {minutes:00}:{seconds:00}";
         timeText.gameObject.SetActive(true);
 
-        yield return new WaitForSecondsRealtime(delayBetween);
-        buttonsPanel.SetActive(true); // 마지막에 버튼 활성화
+        await UniTask.Delay(System.TimeSpan.FromSeconds(delayBetween), DelayType.UnscaledDeltaTime);
+        buttonsPanel.SetActive(true);
     }
 
     public void OnClickRestart()

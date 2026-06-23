@@ -1,4 +1,4 @@
-using System.Collections;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class VFXPrewarmer : MonoBehaviour
@@ -7,13 +7,13 @@ public class VFXPrewarmer : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(Prewarm());
+        PrewarmAsync().Forget();
     }
 
-    private IEnumerator Prewarm()
+    private async UniTaskVoid PrewarmAsync()
     {
         Camera cam = Camera.main;
-        if (cam == null) yield break;
+        if (cam == null) return;
 
         Vector3 spawnPos = cam.transform.position + cam.transform.forward * 2f;
 
@@ -27,9 +27,8 @@ public class VFXPrewarmer : MonoBehaviour
             foreach (var ps in inst.GetComponentsInChildren<ParticleSystem>())
                 ps.Play();
 
-            yield return null;
-            yield return null; // 2프레임 렌더링
-
+            await UniTask.Yield(); // 1프레임
+            await UniTask.Yield(); // 2프레임
             Destroy(inst);
         }
     }
