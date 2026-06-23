@@ -63,7 +63,10 @@ public class ClearUI : MonoBehaviour
 
         await UniTask.Delay(System.TimeSpan.FromSeconds(delayBetween), DelayType.UnscaledDeltaTime);
         buttonsPanel.SetActive(true);
-    }
+
+        await ClearTimeManager.Instance.SubmitClearTimeAsync(
+        waveManager.ElapsedTime, waveManager.TotalKills, gold.TotalSpent);
+        }
 
     public void OnClickRestart()
     {
