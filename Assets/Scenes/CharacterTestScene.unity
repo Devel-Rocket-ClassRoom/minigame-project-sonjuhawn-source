@@ -35669,7 +35669,7 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: 1c700146af3f20e45a4b83c5eaa37784, type: 3}
     - target: {fileID: 8909586843765618989, guid: 1d9c465c8ea972f4fb3272e740325228, type: 3}
       propertyPath: speedPerAgility
-      value: 0.02
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 8909586843765618989, guid: 1d9c465c8ea972f4fb3272e740325228, type: 3}
       propertyPath: dodgeStaminaCost
