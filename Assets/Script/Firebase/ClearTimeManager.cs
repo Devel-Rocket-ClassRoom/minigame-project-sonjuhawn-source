@@ -41,19 +41,9 @@ public class ClearTimeManager : MonoBehaviour
         string uid = AuthManager.Instance.UserId;
         bool isAnonymous = AuthManager.Instance.CurrentUser.IsAnonymous;
 
-        string displayName;
-        if (isAnonymous)
-        {
-            displayName = "Anonymous";
-        }
-        else
-        {
-            if (ProfileManager.Instance.CachedProfile == null)
-                await ProfileManager.Instance.LoadProfileAsync();
-
-            displayName = ProfileManager.Instance.CachedProfile?.nickname
-                ?? AuthManager.Instance.CurrentUser.Email;
-        }
+        string displayName = isAnonymous
+            ? "Anonymous"
+            : ProfileManager.Instance.CachedProfile?.nickname ?? AuthManager.Instance.CurrentUser.Email;
 
         await LeaderboardManager.Instance.SaveToLeaderboardAsync(clearTime, displayName);
     }
