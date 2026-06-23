@@ -72,7 +72,7 @@ public class LeaderboardManager : MonoBehaviour
                 {"timestamp", ServerValue.Timestamp}
             };
 
-            await leaderboardRef.Child(userId).UpdateChildrenAsync(entryData);
+            await leaderboardRef.Push().SetValueAsync(entryData);
             Debug.Log($"[Leaderboard] 성공");
             return (true, null);
         }
