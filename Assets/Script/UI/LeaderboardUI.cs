@@ -8,25 +8,31 @@ public class LeaderboardUI : MonoBehaviour
 {
     [SerializeField] private GameObject leaderboardPanel;
     [SerializeField] private Button closeButton;
-    [SerializeField] private Transform entryContainer;  // 리스트 부모 오브젝트
-    [SerializeField] private GameObject entryPrefab;    // 항목 프리팹 (닉네임+시간 텍스트)
+    [SerializeField] private Transform entryContainer;  
+    [SerializeField] private GameObject entryPrefab;   
 
-    private void Start()
+    private async UniTaskVoid Start()
     {
         closeButton.onClick.AddListener(Close);
         leaderboardPanel.SetActive(false);
+
+        await UniTask.WaitUntil(() => LeaderboardManager.Instance.IsReady);
+        await LoadAndDisplayAsync(); 
     }
 
     private async UniTaskVoid OpenAsync()
     {
+        await UniTask.WaitUntil(() => LeaderboardManager.Instance.IsReady);
+        await LoadAndDisplayAsync();  // 최신 데이터로 갱신
         leaderboardPanel.SetActive(true);
-        await LoadAndDisplayAsync();
     }
 
     private async UniTask LoadAndDisplayAsync()
     {
-        foreach (Transform child in entryContainer)
-            Destroy(child.gameObject);
+        for (int i = entryContainer.childCount - 1; i >= 0; i--)
+        {
+            Destroy(entryContainer.GetChild(i).gameObject);
+        }
 
         List<LeaderboardEntry> entries = await LeaderboardManager.Instance.LoadLeaderboardAsync();
 

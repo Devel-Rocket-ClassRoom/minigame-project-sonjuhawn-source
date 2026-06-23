@@ -47,7 +47,16 @@ public class LoginUI : MonoBehaviour
         var (success, error) = await AuthManager.Instance.SignInUserWithEmailAsync(email, password);
         if (success)
         {
-            ShowStartPanel();
+            var (profile, _) = await ProfileManager.Instance.LoadProfileAsync();
+            if (profile != null)
+            {
+                ShowStartPanel();
+            }
+            else
+            {
+                loginPanel.SetActive(false);
+                nicknamePanel.SetActive(true);
+            }
         }
         else
         {

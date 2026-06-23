@@ -13,6 +13,7 @@ public class LeaderboardManager : MonoBehaviour
     private Query listenerQuery;
     private bool isListenerActive;
     public event Action<List<LeaderboardEntry>> OnLeaderboardUpdated;
+    public bool IsReady => leaderboardRef != null;
 
     private void Awake()
     {
@@ -84,6 +85,7 @@ public class LeaderboardManager : MonoBehaviour
 
     public async UniTask<List<LeaderboardEntry>> LoadLeaderboardAsync(int limit = 5)
     {
+        Debug.Log($"[Leaderboard] leaderboardRef null여부: {leaderboardRef == null}");
         if (leaderboardRef == null)
         {
             return new List<LeaderboardEntry>();
@@ -91,13 +93,11 @@ public class LeaderboardManager : MonoBehaviour
 
         try
         {
-            Debug.Log($"[Leaderboard] 로드 시도");
-
             Query query = leaderboardRef.OrderByChild("clearTime").LimitToFirst(limit);
             DataSnapshot snapshot = await query.GetValueAsync();
-            List<LeaderboardEntry> leaderboard = new List<LeaderboardEntry>();
-
-            Debug.Log($"[Leaderboard] 로드 성공");
+            Debug.Log($"[Leaderboard] snapshot 존재: {snapshot.Exists}, 자식 수: {snapshot.ChildrenCount}");
+            List<LeaderboardEntry> leaderboard = ParseEntries(snapshot);
+            Debug.Log($"[Leaderboard] 로드 성공: {leaderboard.Count}개");
             return leaderboard;
         }
         catch (Exception ex)
@@ -115,7 +115,20 @@ public class LeaderboardManager : MonoBehaviour
         {
             foreach (DataSnapshot child in snapshot.Children)
             {
-                list.Add(LeaderboardEntry.FromJson(child.GetRawJsonValue()));
+                try
+                {
+                    LeaderboardEntry entry = new LeaderboardEntry();
+                    entry.userId = child.Child("userId").Value?.ToString() ?? "";
+                    entry.displayName = child.Child("displayName").Value?.ToString() ?? "";
+                    entry.clearTime = float.Parse(child.Child("clearTime").Value?.ToString() ?? "0", System.Globalization.CultureInfo.InvariantCulture);
+                    entry.timestamp = long.Parse(child.Child("timestamp").Value?.ToString() ?? "0");
+                    list.Add(entry);
+                    Debug.Log($"[Leaderboard] 파싱: {entry.displayName} {entry.clearTime}");
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[Leaderboard] 파싱 실패: {ex.Message}");
+                }
             }
         }
         list.Sort((a, b) => a.clearTime.CompareTo(b.clearTime));

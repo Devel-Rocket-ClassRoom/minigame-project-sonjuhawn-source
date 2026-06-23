@@ -62,7 +62,7 @@ public class ProfileUI : MonoBehaviour
         }
         else
         {
-            nicknameText.text = $"닉네임 : (미설정)";
+            nicknameText.text = $"닉네임 : anonymous";
         }
 
         userIdText.text = $"User ID: {userId}";

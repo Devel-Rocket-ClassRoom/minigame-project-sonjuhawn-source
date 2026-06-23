@@ -9,7 +9,8 @@ public class StartPanel : MonoBehaviour
     [SerializeField] private Transform menuCameraPoint;
     [SerializeField] private CinemachineCamera gameCamera;
     [SerializeField] private GameObject hudCanvas;
-    [SerializeField] private GameObject loginPanel; 
+    [SerializeField] private GameObject loginPanel;
+    [SerializeField] private ProfileUI profileUI;
 
     public bool IsGameStarted { get; private set; } = false;
 
@@ -35,5 +36,12 @@ public class StartPanel : MonoBehaviour
         gameCamera.enabled = true;
         Cursor.visible = false;                      
         Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    public void OnLogoutButton()
+    {
+        AuthManager.Instance.SignOut();
+        loginPanel.SetActive(true);
+        panel.SetActive(false);
     }
 }
