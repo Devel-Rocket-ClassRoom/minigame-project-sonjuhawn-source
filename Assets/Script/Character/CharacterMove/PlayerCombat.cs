@@ -181,8 +181,6 @@ public class PlayerCombat : MonoBehaviour
         if (!canUse)
             return;
 
-        Debug.Log($"[Heavy] STAMINA CONSUMED -{cost}, remaining={stamina.CurrentStamina}");
-
 
         state.ChangeState(PlayerState.HeavyAttacking); 
         SetTriggerExclusive(triggerHash);

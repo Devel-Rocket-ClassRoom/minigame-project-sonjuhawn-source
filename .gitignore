@@ -107,3 +107,7 @@ InitTestScene*.unity*
 
 Assets/Imported/
 Assets/Imported.meta
+Assets/google-services.json
+Assets/StreamingAssets/google-services-desktop.json
+Assets/Resources/FirebaseConfig.asset
+Assets/Firebase/Plugins
