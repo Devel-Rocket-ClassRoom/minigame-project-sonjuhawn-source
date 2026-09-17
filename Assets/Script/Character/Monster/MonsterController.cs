@@ -15,7 +15,6 @@ public class MonsterController : MonoBehaviour
     public static readonly int RangedHash = Animator.StringToHash("RangedAttack");
     public static readonly int DieHash = Animator.StringToHash("Die");
 
-
     public MonsterData Data => data;
     public Animator Anim { get; private set; }
     public MonsterHealth Health { get; private set; }
@@ -38,13 +37,13 @@ public class MonsterController : MonoBehaviour
         ChangeState(new MonsterIdleState());
     }
 
-    private void OnEnable() 
-    { 
+    private void OnEnable()
+    {
         Health.OnDeath += HandleDeath;
         Health.OnDamaged += HandleDamaged;
     }
-    private void OnDisable() 
-    { 
+    private void OnDisable()
+    {
         Health.OnDeath -= HandleDeath;
         Health.OnDamaged -= HandleDamaged;
     }
@@ -69,16 +68,21 @@ public class MonsterController : MonoBehaviour
     }
     public void FacePlayer()
     {
-        if (Target == null) return;
+        if (Target == null)
+            return;
+
         Vector3 direction = (Target.position - transform.position);
         direction.y = 0;
+
         if (direction.sqrMagnitude > 0.01f)
             transform.rotation = Quaternion.LookRotation(direction.normalized);
     }
 
     public void ChasePlayer()
     {
-        if (Target == null) return;
+        if (Target == null)
+            return;
+
         Vector3 direction = (Target.position - transform.position);
         direction.y = 0;
         direction = direction.normalized;
@@ -90,7 +94,8 @@ public class MonsterController : MonoBehaviour
 
     public void OnAttackHit()
     {
-        if (Health.IsDead || Target == null) return;
+        if (Health.IsDead || Target == null)
+            return;
 
         float distance = Vector3.Distance(transform.position, Target.position);
         if (distance <= data.attackRange + 0.5f)
@@ -109,7 +114,9 @@ public class MonsterController : MonoBehaviour
             Destroy(vfx, 2f);
         }
 
-        if (Health.IsDead || Target == null) return;
+        if (Health.IsDead || Target == null)
+            return;
+
         float distance = Vector3.Distance(transform.position, Target.position);
         if (distance <= data.attackRange + 0.5f)
         {
@@ -117,50 +124,64 @@ public class MonsterController : MonoBehaviour
             Target.GetComponent<HealthSystem>()?.TakeDamage(dmg);
         }
     }
+
     public void OnRangedAttackFire()
     {
-        if (Health.IsDead || Target == null || Data.projectilePrefab == null) return;
+        if (Health.IsDead || Target == null || Data.projectilePrefab == null)
+            return;
 
         Vector3 spawnPos = transform.TransformPoint(Data.muzzleLocalOffset);
-        Vector3 dir = (Target.position + Vector3.up * 1f - spawnPos).normalized;  // 살짝 위로 조준 (플레이어 가슴쯤)
+        Vector3 dir = (Target.position + Vector3.up * 1f - spawnPos).normalized;
 
         var proj = Instantiate(Data.projectilePrefab, spawnPos, Quaternion.identity);
         var mp = proj.GetComponent<MonsterProjectile>();
         if (mp != null)
             mp.Init(Data.attackPower, Data.projectileSpeed, dir);
     }
+
     public void Retreat()
     {
-        if (Target == null) return;
+        if (Target == null)
+            return;
+
         Vector3 direction = (transform.position - Target.position);
         direction.y = 0;
         direction = direction.normalized;
 
         transform.position += direction * Data.moveSpeed * Time.deltaTime;
-        Anim.SetFloat(MoveHash, 1);   // 또는 별도 BackStep 트리거
+        Anim.SetFloat(MoveHash, 1);
     }
 
     public void PlayHitReaction()
     {
-        if (Health.IsDead) return;
+        if (Health.IsDead)
+            return;
+
         Anim.SetTrigger(DamageHash);
     }
+
     private void HandleDamaged()
-{
-    if (Health.IsDead) return;             // 안전장치
-    ChangeState(new MonsterDamagedState());
-}
+    {
+        if (Health.IsDead)
+            return;
+
+        if (Current is MonsterTelegraphAttackState tg && tg.IsCharging)
+            return;
+
+        ChangeState(new MonsterDamagedState());
+    }
 
     private void HandleDeath()
     {
         if (Target != null && Target.TryGetComponent<ExperienceSystem>(out var exp))
         {
-            exp.AddExp(data.expReward);  
+            exp.AddExp(data.expReward);
         }
         if (Target != null && Target.TryGetComponent<GoldSystem>(out var gold))
         {
-            gold.AddGold(data.goldReward); 
+            gold.AddGold(data.goldReward);
         }
+
         ChangeState(new MonsterDeadState());
     }
 
@@ -168,8 +189,10 @@ public class MonsterController : MonoBehaviour
     {
         if (Data.projectilePrefab != null)
             return new MonsterRangedAttackState();
+
         if (Data.telegraphTime > 0f)
             return new MonsterTelegraphAttackState();
+
         return new MonsterAttackState();
     }
 }
